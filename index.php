@@ -37,11 +37,8 @@ ob_start();
         $controller = new BaseController(new ModelHelper());
         include(BLOCK_DIR . '/header.php');
         include(BLOCK_DIR . '/menu.php');
-        if (!isset($_GET['page'])) {
-            $page = 'home';
-        } else {
-            $page = $_GET['page'];
-        }
+        $urlParams = $controller->getUrlParams();
+        isset($urlParams->page) ? $page = $urlParams->page : $page = 'home';
         include(VIEW_DIR . '/' . $page . '.php');
         include(BLOCK_DIR . '/footer.php');
         ?>
