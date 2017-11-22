@@ -1,0 +1,2 @@
+<?php
+BaseController::logout();
