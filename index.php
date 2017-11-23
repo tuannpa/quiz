@@ -1,6 +1,4 @@
-<?php
-ob_start();
-?>
+<?php ob_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,16 +29,20 @@ ob_start();
     <div class="container" data-ng-app="myApp">
         <?php
         session_start();
-        require_once('config.php');
+        if (!defined('APPLICATION_PATH')) {
+            $homeDir = str_replace('\\', '/', __DIR__);
+            define('APPLICATION_PATH', $homeDir);
+        }
+        require_once APPLICATION_PATH . '/config.php';
         $config = new Config();
-        require_once(CONTROLLER_DIR . '/BaseController.php');
+        require_once CONTROLLER_DIR . '/BaseController.php';
         $controller = new BaseController(new ModelHelper());
-        include(BLOCK_DIR . '/header.php');
-        include(BLOCK_DIR . '/menu.php');
+        include BLOCK_DIR . '/header.php';
+        include BLOCK_DIR . '/menu.php';
         $urlParams = $controller->getUrlParams();
         isset($urlParams->page) ? $page = $urlParams->page : $page = 'home';
-        include(VIEW_DIR . '/' . $page . '.php');
-        include(BLOCK_DIR . '/footer.php');
+        include VIEW_DIR . '/' . $page . '.php';
+        include BLOCK_DIR . '/footer.php';
         ?>
     </div>
 </body>

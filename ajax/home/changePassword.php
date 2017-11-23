@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('ajaxConfig.php');
+require_once '../ajaxConfig.php';
 $params = BaseController::getRequestParams();
 $controller = new BaseController(new ModelHelper());
 $currentUser = $controller->getUserInfo('users', ['id']);

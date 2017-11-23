@@ -60,7 +60,7 @@ myApp.controller('quizController', [
             if (angular.element('input[type=radio]').is(':checked')) {
                 $scope.loadQuestionPromise = $http({
                     method: 'POST',
-                    url: 'ajax/loadQuestion.php?task=' + task,
+                    url: 'ajax/quiz/loadQuestion.php?task=' + task,
                     data: {
                         currentQuestionId: $scope.currentQuestionId,
                         userChoice: angular.element('input[name=answerGroup]:checked').val(),

@@ -1,6 +1,6 @@
 <?php
 
-require_once(DRIVER_DIR . '/DB.php');
+require_once DRIVER_DIR . '/DB.php';
 
 class ModelHelper extends DB
 {

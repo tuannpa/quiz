@@ -33,7 +33,7 @@ myApp.controller('homeController', [
     $scope.changePassword = function(form){
         $scope.updatePasswordPromise = $http({
             method: 'POST',
-            url: 'ajax/changePassword.php',
+            url: 'ajax/home/changePassword.php',
             data: {
                 password: md5.createHash($scope.password || ''),
                 passwordAgain: md5.createHash($scope.passwordAgain || '')

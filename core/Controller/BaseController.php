@@ -1,6 +1,6 @@
 <?php
 
-require_once(DRIVER_DIR . '/ModelHelper.php');
+require_once DRIVER_DIR . '/ModelHelper.php';
 
 class BaseController
 {

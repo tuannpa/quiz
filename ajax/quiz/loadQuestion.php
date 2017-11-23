@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once('ajaxConfig.php');
+require_once '../ajaxConfig.php';
+require_once HELPER_DIR . '/TemplateHelper.php';
 $params = BaseController::getRequestParams();
 $controller = new BaseController(new ModelHelper());
 $request = $controller->getUrlParams();
@@ -45,54 +46,21 @@ if (!isset($_SESSION['endOfTest'])) {
         ->method('one');
     $question = $controller->toObject($question);
 
-    $questionTemplate = "
-        <div class='ajaxReplace'>
-            <div class='questions'>Câu " . $question->id . ". " . $question->content . "</div>
-            <ul class='answerList'>
-                <li>
-                    <label>
-                        <input type='radio'
-                               name='answerGroup'
-                               class='pointer-on-hover'
-                               value='1'>
-                        <strong>A. </strong>" . $question->first_choice . "
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type='radio'
-                               name='answerGroup'
-                               class='pointer-on-hover'
-                               value='2'>
-                        <strong>B. </strong>" . $question->second_choice . "
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type='radio'
-                               name='answerGroup'
-                               class='pointer-on-hover'
-                               value='3'>
-                        <strong>C. </strong>" . $question->third_choice . "
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type='radio'
-                               name='answerGroup'
-                               class='pointer-on-hover'
-                               value='4'>
-                        <strong>D. </strong>" . $question->fourth_choice . "
-                    </label>
-                </li>
-            </ul>
-        </div>
-    ";
-    $questionTrackingTemplate = "
-    <span class='questionTracking'>
-" . $position . " trong " . $params->totalQuestions . "
-    </span>
-";
+    $questionTemplate = TemplateHelper::setFilePath('template/questionTemplate.html')
+        ->renderTemplate([
+            'questionId' => $question->id,
+            'questionContent' => $question->content,
+            'firstChoice' => $question->first_choice,
+            'secondChoice' => $question->second_choice,
+            'thirdChoice' => $question->third_choice,
+            'fourthChoice' => $question->fourth_choice
+        ]);
+
+    $questionTrackingTemplate = TemplateHelper::setFilePath('template/questionTrackingTemplate.html')
+        ->renderTemplate([
+            'position' => $position,
+            'totalQuestions' => $params->totalQuestions
+        ]);
 } else {
     $allQuestions = $controller->modelHelper
         ->select([
@@ -126,17 +94,12 @@ if (!isset($_SESSION['endOfTest'])) {
             'finish_time' => $totalTime
         ])
         ->method('crud');
-    $endOfTestTemplate = "
-        <div class='ajaxReplace'>
-            <div class='questions'>Bài thi Kết thúc!</div>
-            <h4>Kết quả của bài thi:</h4>
-            <div id='quiz-result'>
-                <p>Tổng số câu trả lời đúng: <span class='highlight'>" . $correctAnswer . "</span></p>
-                <p>Tổng số câu trả lời sai: <span class='highlight'>" . $incorrectAnswer . "</span></p>
-                <p><span class='highlight'>Điểm số: " . $score . " điểm</span></p>
-            </div>
-        </div>
-    ";
+    $endOfTestTemplate = TemplateHelper::setFilePath('template/endOfTestTemplate.html')
+        ->renderTemplate([
+            'correctAnswer' => $correctAnswer,
+            'incorrectAnswer' => $incorrectAnswer,
+            'score' => $score
+        ]);
     $questionTrackingTemplate = "";
     unset($_SESSION['answer'], $_SESSION['questions'], $_SESSION['firstInit'], $_SESSION['currentQuestion']);
 }
