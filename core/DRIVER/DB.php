@@ -3,20 +3,17 @@
 abstract class DB
 {
     private $_conn;
-    private $_server_name = 'localhost';
-    private $_username = 'root';
-    private $_password = '';
-    private $_db_name = 'db_quiz';
     private $_sql = '';
 
-    protected function __construct()
+    protected function __construct($serverName, $username, $password, $dbName)
     {
         if (!$this->_conn) {
-            $this->_conn = new mysqli($this->_server_name, $this->_username, $this->_password, $this->_db_name);
+            $this->_conn = new mysqli($serverName, $username, $password, $dbName);
             $this->mQuery("SET NAMES 'utf8'");
 
-            if ($this->_conn->connect_error)
+            if ($this->_conn->connect_error) {
                 die('Connection failed: ' . $this->_conn->connect_error);
+            }
         }
     }
 

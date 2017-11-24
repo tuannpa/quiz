@@ -2,7 +2,21 @@
 
 class Config
 {
-    public function __construct()
+    const SERVER_NAME = 'localhost';
+    const DB_NAME = 'db_quiz';
+    const USERNAME = 'root';
+    const PASSWORD = '';
+
+    public static function getConfig() {
+        return [
+            'serverName' => self::SERVER_NAME,
+            'dbName' => self::DB_NAME,
+            'username' => self::USERNAME,
+            'password' => self::PASSWORD
+        ];
+    }
+
+    public static function getDir()
     {
         if (!defined('CONTROLLER_DIR')) {
             $controllerDir = str_replace('\\', '/', __DIR__ . '/core/Controller');

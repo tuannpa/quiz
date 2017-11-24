@@ -39,7 +39,6 @@ class BaseController
 
     public function generateRandomQuestions()
     {
-        session_start();
         $randomQuestions = $this->modelHelper
             ->select(['id'])
             ->from('questions')
@@ -60,7 +59,6 @@ class BaseController
 
     public function getFirstQuestion()
     {
-        session_start();
         $firstQuestion = $this->modelHelper
             ->select()
             ->from('questions')
@@ -73,7 +71,6 @@ class BaseController
 
     public function getTotalQuestions()
     {
-        session_start();
         return count($_SESSION['questions']);
     }
 
@@ -104,14 +101,12 @@ class BaseController
 
     public function getUserInfo($table, $field = ['*'])
     {
-        session_start();
         $this->currentUser = $this->modelHelper->findById($table, $_SESSION['user']['id'], $field);
         return $this->toObject($this->currentUser);
     }
 
     public static function hasSignedIn()
     {
-        session_start();
         if (isset($_SESSION['user'])) {
             return true;
         }

@@ -34,7 +34,7 @@
             define('APPLICATION_PATH', $homeDir);
         }
         require_once APPLICATION_PATH . '/config.php';
-        $config = new Config();
+        Config::getDir();
         require_once CONTROLLER_DIR . '/BaseController.php';
         $controller = new BaseController(new ModelHelper());
         include BLOCK_DIR . '/header.php';

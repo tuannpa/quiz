@@ -4,5 +4,5 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', $appDir);
 }
 require_once APPLICATION_PATH . '/config.php';
-$config = new Config();
+Config::getDir();
 require_once CONTROLLER_DIR . '/BaseController.php';
