@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once '../ajaxConfig.php';
 $params = BaseController::getRequestParams();
 $controller = new BaseController(new ModelHelper());
