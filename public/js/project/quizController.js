@@ -33,18 +33,19 @@ myApp.controller('quizController', [
                                    $window,
                                    isNullOrUndefined,
                                    localStorageService) {
+        var increaseTiming = function() {
+            $interval(function () {
+                ++$scope.timing;
+                localStorageService.set('timingAfterReload', $scope.timing);
+            }, 1000);
+        };
+
         if (performance.navigation.type == 1) {
             $scope.timing = localStorageService.get('timingAfterReload');
-            $interval(function () {
-                ++$scope.timing;
-                localStorageService.set('timingAfterReload', $scope.timing);
-            }, 1000);
+            increaseTiming();
         } else {
             $scope.timing = (localStorageService.get('timingAfterReload') > 0) ? localStorageService.get('timingAfterReload') : 0;
-            $interval(function () {
-                ++$scope.timing;
-                localStorageService.set('timingAfterReload', $scope.timing);
-            }, 1000);
+            increaseTiming();
         }
 
         var questions = localStorageService.get('numOfQuestions');
