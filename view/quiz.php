@@ -21,7 +21,7 @@ if (!BaseController::hasSignedIn()) {
                  cg-busy="{promise:loadQuestionPromise,message:'Đang thực hiện..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
 
                 <div class="ajaxReplace">
-                    <div class="questions">Câu <?= $firstQuestion->id . '. ' . $firstQuestion->content ?>
+                    <div class="questions">Câu <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>. <?= $firstQuestion->content ?>
                     </div>
                     <ul class="answerList">
                         <li>

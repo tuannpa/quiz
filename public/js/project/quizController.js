@@ -25,27 +25,22 @@ myApp.controller('quizController', [
     '$timeout',
     '$interval',
     '$window',
-    'isNullOrUndefined', function ($scope,
+    'isNullOrUndefined',
+    'localStorageService', function ($scope,
                                    $http,
                                    $timeout,
                                    $interval,
                                    $window,
-                                   isNullOrUndefined) {
+                                   isNullOrUndefined,
+                                   localStorageService) {
+
         $scope.timing = 0;
         var promise = $interval(function () {
             $scope.timing++;
         }, 1000);
 
-        $scope.questionsCount = 0;
         $scope.showBtnBackToHome = false;
-        console.log($scope.questionsCount);
-        if ($scope.questionsCount > 0) {
-            console.log('haha');
-            $scope.showBtnPrev = true;
-        } else {
-            console.log('hihi');
-            $scope.showBtnPrev = false;
-        }
+        $scope.showBtnPrev = false;
         $scope.showBtnNext = true;
         $scope.showTiming = true;
         $scope.nextQuestion = 'next';
@@ -68,7 +63,6 @@ myApp.controller('quizController', [
                         totalTime: $scope.timing
                     }
                 }).then(function (response) {
-                    console.log($scope.questionsCount);
                     var data = response.data;
                     $scope.currentQuestionId = (!isNullOrUndefined(data.nextQuestionId)) ? data.nextQuestionId : data.prevQuestionId;
                     $timeout(function () {
@@ -79,6 +73,8 @@ myApp.controller('quizController', [
                             $scope.showTiming = false;
                         } else {
                             $scope.showBtnPrev = data.showBtnPrev;
+                            $scope.questionsCount = data.questions;
+                            console.log($scope.questionsCount);
                         }
                         angular.element('.ajaxReplace').replaceWith(data.questionContent);
                         angular.element('.questionTracking').replaceWith(data.questionTrackingContent);

@@ -17,7 +17,7 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
         if ($params->currentQuestionId == $questionId) {
             (($key - 1) != 0) ? $showBtnPrev = true : $showBtnPrev = false;
             $prevQuestionId = $_SESSION['questions'][$key - 1];
-            $position = $key;
+            $_SESSION['position'] = $key;
         }
     } else {
         if ($params->currentQuestionId == $questionId) {
@@ -25,7 +25,7 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
             ($key == (count($_SESSION['questions']) - 1)) ? $_SESSION['endOfTest'] = true : null;
             ($key == (count($_SESSION['questions']) - 1)) ? $totalTime = $params->totalTime : null;
             $nextQuestionId = (!isset($_SESSION['endOfTest'])) ? $_SESSION['questions'][$key + 1] : null;
-            $position = (!isset($_SESSION['endOfTest'])) ? $key + 2 : count($_SESSION['questions']);
+            $_SESSION['position'] = (!isset($_SESSION['endOfTest'])) ? $key + 2 : count($_SESSION['questions']);
             $showBtnBackToHome = (isset($_SESSION['endOfTest'])) ? $showBtnBackToHome = true : null;
             if (isset($_SESSION['endOfTest'])) {
                 $showBtnPrev = false;
@@ -48,7 +48,7 @@ if (!isset($_SESSION['endOfTest'])) {
 
     $questionTemplate = TemplateHelper::setFilePath('template/questionTemplate.html')
         ->renderTemplate([
-            'questionId' => $question->id,
+            'questionId' => $_SESSION['position'],
             'questionContent' => $question->content,
             'firstChoice' => $question->first_choice,
             'secondChoice' => $question->second_choice,
@@ -58,7 +58,7 @@ if (!isset($_SESSION['endOfTest'])) {
 
     $questionTrackingTemplate = TemplateHelper::setFilePath('template/questionTrackingTemplate.html')
         ->renderTemplate([
-            'position' => $position,
+            'position' => $_SESSION['position'],
             'totalQuestions' => $params->totalQuestions
         ]);
 } else {
@@ -101,7 +101,7 @@ if (!isset($_SESSION['endOfTest'])) {
             'score' => $score
         ]);
     $questionTrackingTemplate = "";
-    unset($_SESSION['answer'], $_SESSION['questions'], $_SESSION['firstInit'], $_SESSION['currentQuestion']);
+    unset($_SESSION['answer'], $_SESSION['questions'], $_SESSION['firstInit'], $_SESSION['currentQuestion'], $_SESSION['position']);
 }
 
 echo $controller->jsonResponse([

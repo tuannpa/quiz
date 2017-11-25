@@ -20,8 +20,12 @@ class TemplateHelper
     }
 
     public function renderTemplate($placeholderValue = []) {
+        foreach ($placeholderValue as $placeholder => $value) {
+            $formattedPlaceholder = sprintf('[%s]', $placeholder);
+            $newPlaceholderValue[$formattedPlaceholder] = $value;
+        }
         if ($this->getFileContent()) {
-            return strtr($this->getFileContent(), $placeholderValue);
+            return strtr($this->getFileContent(), $newPlaceholderValue);
         } else {
             throw new Exception('File not found!');
         }
