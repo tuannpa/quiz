@@ -80,7 +80,7 @@ if (!BaseController::hasSignedIn()) {
                     </button>
 
                     <span class="questionTracking">
-                        1 trong <?= $controller->getTotalQuestions() ?>
+                        <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?> trong <?= $controller->getTotalQuestions() ?>
                     </span>
                 </div>
 

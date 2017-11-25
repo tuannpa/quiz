@@ -33,14 +33,23 @@ myApp.controller('quizController', [
                                    $window,
                                    isNullOrUndefined,
                                    localStorageService) {
+        if (performance.navigation.type == 1) {
+            $scope.timing = localStorageService.get('timingAfterReload');
+            $interval(function () {
+                ++$scope.timing;
+                localStorageService.set('timingAfterReload', $scope.timing);
+            }, 1000);
+        } else {
+            $scope.timing = (localStorageService.get('timingAfterReload') > 0) ? localStorageService.get('timingAfterReload') : 0;
+            $interval(function () {
+                ++$scope.timing;
+                localStorageService.set('timingAfterReload', $scope.timing);
+            }, 1000);
+        }
 
-        $scope.timing = 0;
-        var promise = $interval(function () {
-            $scope.timing++;
-        }, 1000);
-
+        var questions = localStorageService.get('numOfQuestions');
+        $scope.showBtnPrev = (questions >= 1);
         $scope.showBtnBackToHome = false;
-        $scope.showBtnPrev = false;
         $scope.showBtnNext = true;
         $scope.showTiming = true;
         $scope.nextQuestion = 'next';
@@ -71,10 +80,10 @@ myApp.controller('quizController', [
                             $scope.showBtnPrev = data.showBtnPrev;
                             $scope.showBtnNext = false;
                             $scope.showTiming = false;
+                            localStorageService.remove('numOfQuestions');
                         } else {
                             $scope.showBtnPrev = data.showBtnPrev;
-                            $scope.questionsCount = data.questions;
-                            console.log($scope.questionsCount);
+                            localStorageService.set('numOfQuestions', data.questions);
                         }
                         angular.element('.ajaxReplace').replaceWith(data.questionContent);
                         angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
