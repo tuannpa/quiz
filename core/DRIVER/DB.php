@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author: Tuan Nguyen
+ */
 
 abstract class DB
 {

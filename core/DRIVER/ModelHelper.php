@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author: Tuan Nguyen
+ */
 
 require_once DRIVER_DIR . '/DB.php';
 require_once APPLICATION_PATH . '/config.php';

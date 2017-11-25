@@ -1,4 +1,10 @@
-<?php ob_start(); ?>
+<?php
+/**
+ * @author: Tuan Nguyen
+ */
+
+ob_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>

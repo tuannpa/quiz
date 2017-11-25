@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author: Tuan Nguyen
+ */
 
 class TemplateHelper
 {
