@@ -96,9 +96,7 @@ class BaseController
             ])
             ->method('one');
 
-        if ($numOfRow == 1) {
-            $_SESSION['user'] = $userInfo;
-        }
+        $_SESSION['user'] = ($numOfRow == 1) ? $userInfo : [];
         return $_SESSION['user'];
     }
 

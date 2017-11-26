@@ -40,15 +40,17 @@ myApp.controller('quizController', [
             }, 1000);
         };
 
+        var questions = localStorageService.get('numOfQuestions');
+        var timingAfterReload = localStorageService.get('timingAfterReload');
+
         if (performance.navigation.type == 1) {
-            $scope.timing = localStorageService.get('timingAfterReload');
+            $scope.timing = (questions >= 1) ? timingAfterReload : 0;
             increaseTiming();
         } else {
-            $scope.timing = (localStorageService.get('timingAfterReload') > 0) ? localStorageService.get('timingAfterReload') : 0;
+            $scope.timing = (timingAfterReload > 0 && questions >= 1) ? timingAfterReload : 0;
             increaseTiming();
         }
 
-        var questions = localStorageService.get('numOfQuestions');
         $scope.showBtnPrev = (questions >= 1);
         $scope.showBtnBackToHome = false;
         $scope.showBtnNext = true;

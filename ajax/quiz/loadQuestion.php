@@ -34,7 +34,11 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
     }
 }
 
-$_SESSION['currentQuestion'] = (isset($nextQuestionId)) ? $nextQuestionId : $prevQuestionId;
+if (isset($nextQuestionId)) {
+    $_SESSION['currentQuestion'] = $nextQuestionId;
+} elseif (isset($prevQuestionId)) {
+    $_SESSION['currentQuestion'] = $prevQuestionId;
+}
 
 if (!isset($_SESSION['endOfTest'])) {
     $question = $controller->modelHelper
@@ -112,5 +116,5 @@ echo $controller->jsonResponse([
     'questionContent' => isset($questionTemplate) ? $questionTemplate : $endOfTestTemplate,
     'questionTrackingContent' => $questionTrackingTemplate,
     'showBtnBackToHome' => isset($showBtnBackToHome) ? $showBtnBackToHome : null,
-    'questions' => count($_SESSION['answer'])
+    'questions' => isset($_SESSION['answer']) ? count($_SESSION['answer']) : null
 ]);
