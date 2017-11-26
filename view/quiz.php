@@ -16,11 +16,12 @@ if (!BaseController::hasSignedIn()) {
             </h4>
 
             <div class="questionsBox"
-                 data-ng-init="currentQuestionId = <?= $firstQuestion->id ?>; numOfQuestions = <?= $controller->getTotalQuestions() ?>"
+                 data-ng-init="currentQuestionId = <?= $firstQuestion->id ?>; numOfQuestions = <?= $controller->getTotalQuestions() ?>; selectedAnswer = <?= BaseController::getQuestionChoice() ?>"
                  cg-busy="{promise:loadQuestionPromise,message:'Đang thực hiện..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
 
                 <div class="ajaxReplace">
-                    <div class="questions">Câu <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>. <?= $firstQuestion->content ?>
+                    <div class="questions">Câu <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
+                        . <?= $firstQuestion->content ?>
                     </div>
                     <ul class="answerList">
                         <li>
@@ -79,7 +80,8 @@ if (!BaseController::hasSignedIn()) {
                     </button>
 
                     <span class="questionTracking">
-                        <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?> trong <?= $controller->getTotalQuestions() ?>
+                        <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
+                        trong <?= $controller->getTotalQuestions() ?>
                     </span>
                 </div>
 

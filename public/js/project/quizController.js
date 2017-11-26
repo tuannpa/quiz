@@ -43,6 +43,12 @@ myApp.controller('quizController', [
         var questions = localStorageService.get('numOfQuestions');
         var timingAfterReload = localStorageService.get('timingAfterReload');
 
+        $scope.$watch('selectedAnswer', function () {
+            if ($scope.selectedAnswer) {
+                angular.element('.answerList').find(':radio[name=answerGroup][value="' + $scope.selectedAnswer + '"]').prop('checked', true);
+            }
+        });
+
         if (performance.navigation.type == 1) {
             $scope.timing = (questions >= 1) ? timingAfterReload : 0;
             increaseTiming();

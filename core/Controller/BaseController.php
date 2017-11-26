@@ -36,8 +36,23 @@ class BaseController
         return $this->toObject($_GET);
     }
 
-    public function jsonResponse($data = []) {
+    public function jsonResponse($data = [])
+    {
         return json_encode($data);
+    }
+
+    public static function getQuestionChoice()
+    {
+        if (isset($_SESSION['currentQuestion']) && isset($_SESSION['answer'])) {
+            if (array_key_exists($_SESSION['currentQuestion'], $_SESSION['answer'])) {
+                $selectedChoice = $_SESSION['answer'][$_SESSION['currentQuestion']];
+            } else {
+                $selectedChoice = 0;
+            }
+            return $selectedChoice;
+        } else {
+            return 0;
+        }
     }
 
     public function generateRandomQuestions()
