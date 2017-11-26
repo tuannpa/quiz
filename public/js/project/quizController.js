@@ -27,13 +27,13 @@ myApp.controller('quizController', [
     '$window',
     'isNullOrUndefined',
     'localStorageService', function ($scope,
-                                   $http,
-                                   $timeout,
-                                   $interval,
-                                   $window,
-                                   isNullOrUndefined,
-                                   localStorageService) {
-        var increaseTiming = function() {
+                                     $http,
+                                     $timeout,
+                                     $interval,
+                                     $window,
+                                     isNullOrUndefined,
+                                     localStorageService) {
+        var increaseTiming = function () {
             $interval(function () {
                 ++$scope.timing;
                 localStorageService.set('timingAfterReload', $scope.timing);
@@ -89,6 +89,7 @@ myApp.controller('quizController', [
                             localStorageService.set('numOfQuestions', data.questions);
                         }
                         angular.element('.ajaxReplace').replaceWith(data.questionContent);
+                        angular.element('.answerList').find(':radio[name=answerGroup][value="' + data.selectedChoice + '"]').prop('checked', true);
                         angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
                     }, 1200);
                 });

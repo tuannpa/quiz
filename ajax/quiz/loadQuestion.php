@@ -17,6 +17,9 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
         if ($params->currentQuestionId == $questionId) {
             (($key - 1) != 0) ? $showBtnPrev = true : $showBtnPrev = false;
             $prevQuestionId = $_SESSION['questions'][$key - 1];
+            if (array_key_exists($prevQuestionId, $_SESSION['answer'])) {
+                $selectedChoice = $_SESSION['answer'][$prevQuestionId];
+            }
             $_SESSION['position'] = $key;
         }
     } else {
@@ -25,6 +28,9 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
             ($key == (count($_SESSION['questions']) - 1)) ? $_SESSION['endOfTest'] = true : null;
             ($key == (count($_SESSION['questions']) - 1)) ? $totalTime = $params->totalTime : null;
             $nextQuestionId = (!isset($_SESSION['endOfTest'])) ? $_SESSION['questions'][$key + 1] : null;
+            if (array_key_exists($nextQuestionId, $_SESSION['answer'])) {
+                $selectedChoice = $_SESSION['answer'][$nextQuestionId];
+            }
             $_SESSION['position'] = (!isset($_SESSION['endOfTest'])) ? $key + 2 : count($_SESSION['questions']);
             $showBtnBackToHome = (isset($_SESSION['endOfTest'])) ? $showBtnBackToHome = true : null;
             if (isset($_SESSION['endOfTest'])) {
@@ -113,6 +119,7 @@ echo $controller->jsonResponse([
     'endOfTest' => isset($_SESSION['endOfTest']) ? $_SESSION['endOfTest'] : null,
     'prevQuestionId' => isset($prevQuestionId) ? $prevQuestionId : null,
     'nextQuestionId' => isset($nextQuestionId) ? $nextQuestionId : null,
+    'selectedChoice' => isset($selectedChoice) ? $selectedChoice : null,
     'questionContent' => isset($questionTemplate) ? $questionTemplate : $endOfTestTemplate,
     'questionTrackingContent' => $questionTrackingTemplate,
     'showBtnBackToHome' => isset($showBtnBackToHome) ? $showBtnBackToHome : null,

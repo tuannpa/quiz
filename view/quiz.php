@@ -8,7 +8,6 @@ if (!BaseController::hasSignedIn()) {
         $questions = $controller->generateRandomQuestions();
         $firstQuestion = $controller->getFirstQuestion();
         $firstQuestion->id = $controller->toInteger($firstQuestion->id);
-        var_dump($questions);
         ?>
         <div class="preview" data-ng-controller="quizController">
 
