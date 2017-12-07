@@ -5,18 +5,15 @@
 
 class Config
 {
-    const SERVER_NAME = 'localhost';
-    const DB_NAME = 'db_quiz';
-    const USERNAME = 'root';
-    const PASSWORD = '';
+    private static $config = [
+        'serverName' => 'localhost',
+        'dbName' => 'db_quiz',
+        'username' => 'root',
+        'password' => ''
+    ];
 
     public static function getConfig() {
-        return [
-            'serverName' => self::SERVER_NAME,
-            'dbName' => self::DB_NAME,
-            'username' => self::USERNAME,
-            'password' => self::PASSWORD
-        ];
+        return self::$config;
     }
 
     public static function getDir()

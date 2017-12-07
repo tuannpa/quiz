@@ -42,6 +42,10 @@ if (isset($_POST['btnLogin'])) {
             }
             ?>
 
+            <div class="form-group text-center">
+                <a href="javascript:void(0);">Đăng ký tài khoản</a>
+            </div>
+
             <div class="form-group">
                 <button type="submit" name="btnLogin" class="btn btn-secondary btn-login">Đăng Nhập</button>
             </div>
