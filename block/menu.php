@@ -34,7 +34,7 @@
                 ?>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Hãy tìm kiếm gì đó?" aria-label="Search">
+                <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm tin tức.." aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0 search-btn" type="submit">Tìm kiếm</button>
             </form>
         </div>

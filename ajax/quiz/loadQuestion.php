@@ -108,6 +108,7 @@ if (!isset($_SESSION['endOfTest'])) {
         ->renderTemplate([
             'correctAnswer' => $correctAnswer,
             'incorrectAnswer' => $incorrectAnswer,
+            'totalTime' => $controller->formatTime($totalTime),
             'score' => $score
         ]);
     $questionTrackingTemplate = "";
