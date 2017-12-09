@@ -42,8 +42,8 @@ if (isset($_POST['btnLogin'])) {
             }
             ?>
 
-            <div class="form-group text-center">
-                <a href="javascript:void(0);">Đăng ký tài khoản</a>
+            <div class="form-group text-center" data-ng-controller="registerController">
+                <a href="javascript:void(0);" data-ng-click="openRegisterForm()">Đăng ký tài khoản</a>
             </div>
 
             <div class="form-group">

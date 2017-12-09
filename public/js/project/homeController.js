@@ -4,13 +4,15 @@ var myApp = angular.module('myApp',[
     'cgBusy',
     'angular-md5',
     'ngSanitize',
-    'LocalStorageModule'
+    'LocalStorageModule',
+    'ngDialog'
 ]);
-myApp.config(function (localStorageServiceProvider) {
+myApp.config([
+    'localStorageServiceProvider', function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('myApp')
         .setStorageType('sessionStorage')
-});
+}]);
 myApp.factory('isNullOrUndefined', function() {
    return function(val) {
        return angular.isUndefined(val) || val === null;

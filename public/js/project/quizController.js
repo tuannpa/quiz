@@ -89,7 +89,7 @@ myApp.controller('quizController', [
                             $scope.showBtnPrev = data.showBtnPrev;
                             $scope.showBtnNext = false;
                             $scope.showTiming = false;
-                            localStorageService.remove('numOfQuestions');
+                            localStorageService.remove('numOfQuestions', 'timingAfterReload');
                         } else {
                             $scope.showBtnPrev = data.showBtnPrev;
                             localStorageService.set('numOfQuestions', data.questions);
