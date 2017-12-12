@@ -83,12 +83,12 @@ abstract class DB
 
     public function findById($table, $id, $field = ['*'])
     {
-        $colName = '';
-        foreach ($field as $value) {
-            $colName .= ',' . $value;
-        }
-        $sql = 'SELECT ' . ltrim($colName, ',') . ' FROM ' . $table . ' WHERE id = ' . $id;
-        return $this->mFetchAssocOne($sql);
+        $this->_sql = $this->select($field)
+                           ->from($table)
+                           ->where([
+                               'id=' => $id
+                           ]);
+        return $this->mFetchAssocOne($this->_sql);
     }
 
     public function all($table, $field = ['*'], $extended = '')
