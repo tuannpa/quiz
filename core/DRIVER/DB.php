@@ -83,12 +83,12 @@ abstract class DB
 
     public function findById($table, $id, $field = ['*'])
     {
-        $this->_sql = $this->select($field)
-                           ->from($table)
-                           ->where([
-                               'id=' => $id
-                           ]);
-        return $this->mFetchAssocOne($this->_sql);
+        return $this->select($field)
+                    ->from($table)
+                    ->where([
+                        'id=' => $id
+                    ])
+                    ->method('one');
     }
 
     public function all($table, $field = ['*'], $extended = '')
