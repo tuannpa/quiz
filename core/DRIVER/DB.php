@@ -91,14 +91,11 @@ abstract class DB
                     ->method('one');
     }
 
-    public function all($table, $field = ['*'], $extended = '')
+    public function all($table, $field = ['*'])
     {
-        $colName = '';
-        foreach ($field as $value) {
-            $colName .= ',' . $value;
-        }
-        $sql = 'SELECT ' . ltrim($colName, ',') . ' FROM ' . $table . ' ' . $extended;
-        return $this->mFetchAssoc($sql);
+        return $this->select($field)
+                    ->from($table)
+                    ->method('many');
     }
 
     public function select($field = ['*'])
