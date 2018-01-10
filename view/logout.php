@@ -1,2 +1,2 @@
 <?php
-BaseController::logout();
+AuthController::logout();

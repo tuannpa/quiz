@@ -3,7 +3,7 @@
  * @author: Tuan Nguyen
  */
 
-abstract class DB
+abstract class Database
 {
     private $_conn;
     private $_sql = '';
@@ -81,30 +81,17 @@ abstract class DB
         return $this;
     }
 
-    public function findById($table, $id, $field = ['*'])
+    public function select()
     {
-        return $this->select($field)
-                    ->from($table)
-                    ->where([
-                        'id=' => $id
-                    ])
-                    ->method('one');
-    }
-
-    public function all($table, $field = ['*'])
-    {
-        return $this->select($field)
-                    ->from($table)
-                    ->method('many');
-    }
-
-    public function select($field = ['*'])
-    {
-        $colName = '';
-        foreach ($field as $value) {
-            $colName .= ',' . $value;
+        $colName = null;
+        if (!empty(func_get_args())) {
+            foreach (func_get_args() as $column) {
+                $colName .= ',' . $column;
+            }
         }
-        $this->_sql = 'SELECT ' . ltrim($colName, ',');
+        $colName = (!is_null($colName)) ? ltrim($colName, ',') : '*';
+
+        $this->_sql = 'SELECT ' . $colName;
         return $this;
     }
 

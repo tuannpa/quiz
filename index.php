@@ -20,7 +20,28 @@ ob_start();
     <link rel="stylesheet" type="text/css" href="public/css/angular-toaster/toaster.min.css">
     <link rel="stylesheet" type="text/css" href="public/css/angular-ngDialog/ngDialog.min.css">
     <link rel="stylesheet" type="text/css" href="public/css/angular-ngDialog/ngDialog-theme-default.min.css">
-
+</head>
+<body data-ng-app="myApp">
+    <div class="container">
+        <?php
+        session_start();
+        if (!defined('APPLICATION_PATH')) {
+            $homeDir = str_replace('\\', '/', __DIR__ . DIRECTORY_SEPARATOR);
+            define('APPLICATION_PATH', $homeDir);
+        }
+        require_once APPLICATION_PATH . 'config.php';
+        Config::getDir();
+        require_once CONTROLLER_DIR . 'Base/BaseController.php';
+        require_once CONTROLLER_DIR . 'AuthController.php';
+        $baseInstance = new BaseController(new QueryHelper());
+        include BLOCK_DIR . 'header.php';
+        include BLOCK_DIR . 'menu.php';
+        $urlParams = $baseInstance->getUrlParams();
+        $page = isset($urlParams->page) ? $urlParams->page : 'home';
+        include VIEW_DIR . $page . '.php';
+        include BLOCK_DIR . 'footer.php';
+        ?>
+    </div>
     <script src="public/js/jquery/jquery.min.js"></script>
     <script src="public/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="public/js/bootstrap/bootstrap.min.js"></script>
@@ -32,30 +53,10 @@ ob_start();
     <script src="public/js/angular-sanitize/angular-sanitize.js"></script>
     <script src="public/js/angular-local-storage/angular-local-storage.min.js"></script>
     <script src="public/js/angular-ngDialog/ngDialog.min.js"></script>
+    <script src="public/js/project/appModule.js"></script>
     <script src="public/js/project/homeController.js"></script>
     <script src="public/js/project/quizController.js"></script>
     <script src="public/js/project/registerController.js"></script>
-</head>
-<body data-ng-app="myApp">
-    <div class="container">
-        <?php
-        session_start();
-        if (!defined('APPLICATION_PATH')) {
-            $homeDir = str_replace('\\', '/', __DIR__);
-            define('APPLICATION_PATH', $homeDir);
-        }
-        require_once APPLICATION_PATH . '/config.php';
-        Config::getDir();
-        require_once CONTROLLER_DIR . '/BaseController.php';
-        $controller = new BaseController(new ModelHelper());
-        include BLOCK_DIR . '/header.php';
-        include BLOCK_DIR . '/menu.php';
-        $urlParams = $controller->getUrlParams();
-        isset($urlParams->page) ? $page = $urlParams->page : $page = 'home';
-        include VIEW_DIR . '/' . $page . '.php';
-        include BLOCK_DIR . '/footer.php';
-        ?>
-    </div>
     <script type="text/ng-template" id="registerForm">
         <div class="modal-header text-center register-heading">
             <h5 class="modal-title">Đăng Ký Tài Khoản</h5>
@@ -89,6 +90,15 @@ ob_start();
         <div class="ngdialog-buttons">
             <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="">Open next</button>
         </div>
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.cg-busy-default-wrapper').addClass('loading-change-password');
+            $('.cg-busy-default-wrapper').addClass('question-loading');
+            $('.btn-no').on('click', function () {
+                $('.logout-popup').collapse('hide');
+            });
+        });
     </script>
 </body>
 </html>

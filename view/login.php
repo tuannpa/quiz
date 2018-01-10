@@ -1,15 +1,15 @@
 <?php
 if (isset($_POST['btnLogin'])) {
-    $username = $controller->modelHelper->mRealEscapeString($_POST['username']);
-    $password = md5($controller->modelHelper->mRealEscapeString($_POST['password']));
-    $user = $controller->loginAuth($username, $password);
+    $username = $controller->queryHelper->mRealEscapeString($_POST['username']);
+    $password = md5($controller->queryHelper->mRealEscapeString($_POST['password']));
+    $authController = new AuthController($baseInstance->queryHelper);
+    $user = $authController->loginAuth($username, $password);
     if ($user) {
         header('Location:index.php');
     } else {
         $message = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng!';
     }
 }
-
 ?>
 <div class="row login-section">
     <div class="col-md-5 div-center">
@@ -32,15 +32,11 @@ if (isset($_POST['btnLogin'])) {
                        oninput="setCustomValidity('')">
             </div>
 
-            <?php
-            if (isset($message)) {
-                ?>
+            <?php if (isset($message)): ?>
                 <div class="alert alert-warning" role="alert">
                     <?= $message ?>
                 </div>
-                <?php
-            }
-            ?>
+            <?php endif; ?>
 
             <div class="form-group text-center" data-ng-controller="registerController">
                 <a href="javascript:void(0);" data-ng-click="openRegisterForm()">Đăng ký tài khoản</a>

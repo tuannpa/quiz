@@ -1,11 +1,12 @@
 <?php
-if (!BaseController::hasSignedIn()) {
-    header('Location:?page=login');
-} else {
-    if (isset($_SESSION['endOfTest'])) {
+if (AuthController::hasSignedIn()):
+    require_once CONTROLLER_DIR . 'HomeController.php';
+
+    $homeController = new HomeController($baseInstance->queryHelper);
+    if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
-    }
-    $userInfo = $controller->getUserInfo('user_information');
+    endif;
+    $userInfo = $homeController->getUserInfo('user_information');
     $birthday = (!empty($userInfo->date_of_birth)) ? date('d/m/Y', strtotime($userInfo->date_of_birth)) : 'Không có dữ liệu..';
     $gender = ($userInfo->gender == 1) ? 'Nam' : 'Nữ';
     ?>
@@ -57,8 +58,8 @@ if (!BaseController::hasSignedIn()) {
                            required
                            data-ng-minlength="6"
                            data-ng-maxlength="20"
-                           data-ng-class="{'got-errors' : userForm.password.$dirty && userForm.password.$invalid}">
-                    <div data-ng-show="userForm.password.$dirty && userForm.password.$invalid" class="on-same-line">
+                           data-ng-class="{'got-errors' : userForm.$submitted && userForm.password.$invalid}">
+                    <div data-ng-if="userForm.$submitted" class="on-same-line">
                         <span data-ng-show="userForm.password.$error.minlength"
                               data-toggle="popover"
                               data-trigger="hover"
@@ -91,41 +92,22 @@ if (!BaseController::hasSignedIn()) {
                        required
                        data-ng-minlength="6"
                        data-ng-maxlength="20"
-                       data-ng-class="{'got-errors' : userForm.passwordAgain.$dirty && userForm.passwordAgain.$invalid}"
+                       data-ng-class="{'got-errors' : userForm.$submitted && userForm.password.$invalid}"
                        data-compare-to="password">
-                <div data-ng-show="userForm.passwordAgain.$dirty && userForm.passwordAgain.$invalid"
+                <div data-ng-if="userForm.$submitted"
                      class="on-same-line">
-                    <span data-ng-show="userForm.passwordAgain.$error.minlength"
+                    <span data-ng-show="userForm.passwordAgain.$error.compareTo"
                           data-toggle="popover"
                           data-trigger="hover"
                           data-placement="bottom"
-                          data-content="Mật khẩu gồm tối thiểu 6 ký tự"
-                          class="fa fa-exclamation-triangle warning-icon nxt-to-btn pointer-on-hover"
-                          aria-hidden="true"></span>
-                    <span data-ng-show="userForm.passwordAgain.$error.maxlength"
-                          data-toggle="popover"
-                          data-trigger="hover"
-                          data-placement="bottom"
-                          data-content="Mật khẩu gồm tối đa 20 ký tự"
-                          class="fa fa-exclamation-triangle warning-icon nxt-to-btn pointer-on-hover"
-                          aria-hidden="true"></span>
-                    <span data-ng-show="userForm.passwordAgain.$error.required"
-                          data-toggle="popover"
-                          data-trigger="hover"
-                          data-placement="bottom"
-                          data-content="Bạn chưa nhập mật khẩu"
+                          data-content="Mật khẩu xác nhận không hợp lệ"
                           class="fa fa-exclamation-triangle warning-icon nxt-to-btn pointer-on-hover"
                           aria-hidden="true"></span>
                 </div>
                 <span class="input-group-btn">
 				    <button class="btn btn-secondary pointer-on-hover"
-                            type="submit"
-                            data-ng-disabled="userForm.$invalid">Thay đổi</button>
+                            type="submit">Thay đổi</button>
 			    </span>
-            </div>
-            <div data-ng-show="userForm.passwordAgain.$error.compareTo"
-                 class="alert alert-warning user-field warning-box">
-                <span>Mật khẩu và Mật khẩu xác nhận chưa giống nhau!</span>
             </div>
         </form>
 
@@ -159,19 +141,8 @@ if (!BaseController::hasSignedIn()) {
             </div>
         </div>
     </div>
-
-    <?php
-}
+<?php
+else:
+    header('Location:?page=login');
+endif;
 ?>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.cg-busy-default-wrapper').addClass('loading-change-password');
-        $('.btn-no').on('click', function () {
-            $('.logout-popup').collapse('hide');
-        });
-
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        })
-    });
-</script>

@@ -17,9 +17,9 @@ class TemplateHelper
     {
         if (file_exists(self::$_filePath)) {
             return file_get_contents(self::$_filePath);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function renderTemplate($placeholderValue = []) {
@@ -27,10 +27,10 @@ class TemplateHelper
             $formattedPlaceholder = sprintf('[%s]', $placeholder);
             $newPlaceholderValue[$formattedPlaceholder] = $value;
         }
-        if ($this->getFileContent()) {
-            return strtr($this->getFileContent(), $newPlaceholderValue);
-        } else {
+        if (!$this->getFileContent()) {
             throw new Exception('File not found!');
         }
+
+        return strtr($this->getFileContent(), $newPlaceholderValue);
     }
 }

@@ -1,13 +1,12 @@
 <?php
-if (!BaseController::hasSignedIn()) {
-    header('Location:?page=login');
-} else {
-    if (isset($_SESSION['endOfTest'])) {
-        header('Location:?page=home');
-    } else {
-        $questions = $controller->generateRandomQuestions();
-        $firstQuestion = $controller->getFirstQuestion();
-        $firstQuestion->id = $controller->toInteger($firstQuestion->id);
+if (AuthController::hasSignedIn()):
+    require_once CONTROLLER_DIR . 'QuizController.php';
+
+    if (!isset($_SESSION['endOfTest'])):
+        $quizController = new QuizController($baseInstance->queryHelper);
+        $questions = $quizController->generateRandomQuestions();
+        $firstQuestion = $quizController->getFirstQuestion();
+        $firstQuestion->id = $quizController->toInteger($firstQuestion->id);
         ?>
         <div class="preview" data-ng-controller="quizController">
 
@@ -16,7 +15,7 @@ if (!BaseController::hasSignedIn()) {
             </h4>
 
             <div class="questionsBox"
-                 data-ng-init="currentQuestionId = <?= $firstQuestion->id ?>; numOfQuestions = <?= $controller->getTotalQuestions() ?>; selectedAnswer = <?= BaseController::getQuestionChoice() ?>"
+                 data-ng-init="currentQuestionId = <?= $firstQuestion->id ?>; numOfQuestions = <?= $quizController->getTotalQuestions() ?>; selectedAnswer = <?= QuizController::getQuestionChoice() ?>"
                  cg-busy="{promise:loadQuestionPromise,message:'Đang tải..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
 
                 <div class="ajaxReplace">
@@ -71,17 +70,17 @@ if (!BaseController::hasSignedIn()) {
                     <button
                             class="button pointer-on-hover"
                             data-ng-if="showBtnPrev"
-                            data-ng-click="loadQuestion(prevQuestion)">Quay lại
+                            data-ng-click="loadQuestion('prev')">Quay lại
                     </button>
                     <button
                             class="button pointer-on-hover"
                             data-ng-if="showBtnNext"
-                            data-ng-click="loadQuestion(nextQuestion)">Tiếp tục
+                            data-ng-click="loadQuestion('next')">Tiếp tục
                     </button>
 
                     <span class="questionTracking">
                         <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
-                        trong <?= $controller->getTotalQuestions() ?>
+                        trong <?= $quizController->getTotalQuestions(); ?>
                     </span>
                 </div>
 
@@ -93,13 +92,12 @@ if (!BaseController::hasSignedIn()) {
             </div>
 
         </div>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.cg-busy-default-wrapper').addClass('question-loading');
-            })
-        </script>
-        <?php
-    }
-}
+<?php
+    else:
+        header('Location:?page=home');
+    endif;
+else:
+    header('Location:?page=login');
+endif;
 ?>
 

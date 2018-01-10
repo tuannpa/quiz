@@ -1,9 +1,10 @@
 <?php
 session_start();
 require_once '../ajaxConfig.php';
-require_once HELPER_DIR . '/TemplateHelper.php';
+require_once CONTROLLER_DIR . '/QuizController.php';
+require_once HELPER_DIR . 'TemplateHelper.php';
 $params = BaseController::getRequestParams();
-$controller = new BaseController(new ModelHelper());
+$controller = new QuizController(new QueryHelper());
 $request = $controller->getUrlParams();
 
 if (!isset($_SESSION['answer'])) {
@@ -47,7 +48,7 @@ if (isset($nextQuestionId)) {
 }
 
 if (!isset($_SESSION['endOfTest'])) {
-    $question = $controller->modelHelper
+    $question = $controller->queryHelper
         ->select()
         ->from('questions')
         ->where([
@@ -72,7 +73,7 @@ if (!isset($_SESSION['endOfTest'])) {
             'totalQuestions' => $params->totalQuestions
         ]);
 } else {
-    $allQuestions = $controller->modelHelper
+    $allQuestions = $controller->queryHelper
         ->select([
             'id', 'answer'
         ])
@@ -95,7 +96,7 @@ if (!isset($_SESSION['endOfTest'])) {
         }
     }
     $score = $correctAnswer * 0.5;
-    $controller->modelHelper
+    $controller->queryHelper
         ->insert('quiz_result', [
             'user_id' => $_SESSION['user']['id'],
             'correct_answer' => $correctAnswer,
@@ -115,7 +116,7 @@ if (!isset($_SESSION['endOfTest'])) {
     unset($_SESSION['answer'], $_SESSION['questions'], $_SESSION['firstInit'], $_SESSION['currentQuestion'], $_SESSION['position']);
 }
 
-echo $controller->jsonResponse([
+$controller->jsonResponse([
     'showBtnPrev' => isset($showBtnPrev) ? $showBtnPrev : null,
     'endOfTest' => isset($_SESSION['endOfTest']) ? $_SESSION['endOfTest'] : null,
     'prevQuestionId' => isset($prevQuestionId) ? $prevQuestionId : null,

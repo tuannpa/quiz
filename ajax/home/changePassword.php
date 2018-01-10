@@ -1,10 +1,11 @@
 <?php
 session_start();
 require_once '../ajaxConfig.php';
-$params = BaseController::getRequestParams();
-$controller = new BaseController(new ModelHelper());
-$currentUser = $controller->getUserInfo('users', ['id']);
-$state = $controller->modelHelper
+require_once CONTROLLER_DIR . '/HomeController.php';
+$params = HomeController::getRequestParams();
+$controller = new HomeController(new QueryHelper());
+$currentUser = $controller->getUserInfo('users');
+$state = $controller->queryHelper
     ->update('users', [
         'password' => $params->password
     ])
@@ -12,13 +13,4 @@ $state = $controller->modelHelper
         'id =' => $currentUser->id
     ])
     ->method('crud');
-
-if ($state) {
-    echo json_encode([
-        'success' => true
-    ]);
-} else {
-    echo json_encode([
-        'success' => false
-    ]);
-}
+$controller->jsonResponse(['status' => $state]);

@@ -23,15 +23,11 @@
                     </div>
                 </li>
 
-                <?php
-                if (BaseController::hasSignedIn()) {
-                    ?>
+                <?php if (AuthController::hasSignedIn()):?>
                     <li class="nav-item active">
                         <a class="nav-link" href="?page=quiz">Thi Trắc Nghiệm <span class="sr-only">(current)</span></a>
                     </li>
-                    <?php
-                }
-                ?>
+                <?php endif; ?>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm tin tức.." aria-label="Search">
