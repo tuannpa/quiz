@@ -15,10 +15,10 @@ class BaseController
         $this->queryHelper = $queryHelper;
     }
 
-    public static function getRequestParams()
+    public static function getRequestParams($getArray = false)
     {
         $jsonData = file_get_contents("php://input");
-        return json_decode($jsonData);
+        return json_decode($jsonData, $getArray);
     }
 
     public function toInteger($value)
