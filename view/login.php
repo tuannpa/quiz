@@ -1,8 +1,8 @@
 <?php
 if (isset($_POST['btnLogin'])) {
-    $username = $controller->queryHelper->mRealEscapeString($_POST['username']);
-    $password = md5($controller->queryHelper->mRealEscapeString($_POST['password']));
     $authController = new AuthController($baseInstance->queryHelper);
+    $username = $authController->queryHelper->mRealEscapeString($_POST['username']);
+    $password = md5($authController->queryHelper->mRealEscapeString($_POST['password']));
     $user = $authController->loginAuth($username, $password);
     if ($user) {
         header('Location:index.php');
