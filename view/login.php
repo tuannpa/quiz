@@ -1,15 +1,15 @@
 <?php
-if (isset($_POST['btnLogin'])) {
+if (isset($_POST['btnLogin'])):
     $authController = new AuthController($baseInstance->queryHelper);
     $username = $authController->queryHelper->mRealEscapeString($_POST['username']);
     $password = md5($authController->queryHelper->mRealEscapeString($_POST['password']));
     $user = $authController->loginAuth($username, $password);
-    if ($user) {
-        header('Location:index.php');
-    } else {
+    if (!$user):
         $message = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng!';
-    }
-}
+    else:
+        header('Location:index.php');
+    endif;
+endif;
 ?>
 <div class="row login-section">
     <div class="col-md-5 div-center">
