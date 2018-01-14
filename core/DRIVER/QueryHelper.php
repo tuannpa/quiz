@@ -11,23 +11,26 @@ class QueryHelper extends Database
     public function __construct()
     {
         $config = Config::getConfig();
-        parent::__construct($config['serverName'], $config['username'], $config['password'], $config['dbName']);
+        parent::__construct($config['host'], $config['username'], $config['password'], $config['dbName']);
     }
 
     public function findById($table, $id)
     {
-        return $this->select()
-            ->from($table)
-            ->where([
-                'id=' => $id
-            ])
-            ->method('one');
+        $query = $this->select('*')
+                        ->from($table)
+                        ->where('id = ?')
+                        ->setQuery()
+                        ->execQuery('getResult', 'i', [$id]);
+
+        return $this->fetchData($query);
     }
 
     public function all($table)
     {
-        return $this->select()
-            ->from($table)
-            ->method('many');
+        $query = $this->select('*')
+                        ->from($table)
+                        ->execQuery('getResult');
+
+        return $this->fetchData($query);
     }
 }

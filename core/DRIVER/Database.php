@@ -265,7 +265,7 @@ abstract class Database
 
     /**
      * Builds complete query, returns current query.
-     * @return string
+     * @return $this
      */
     public function setQuery()
     {
@@ -307,7 +307,9 @@ abstract class Database
     public function execQuery($command, $dataType = null, $values = [])
     {
         $stmt = $this->prepareQuery($this->_sql);
-        $stmt->bind_param($dataType, ...$values);
+        if (!empty($dataType) && !empty($values)) {
+            $stmt->bind_param($dataType, ...$values);
+        }
         $exec = $stmt->execute();
 
         switch ($command) {

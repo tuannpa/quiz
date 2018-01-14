@@ -6,7 +6,7 @@
 class Config
 {
     private static $config = [
-        'serverName' => 'localhost',
+        'host' => 'localhost',
         'dbName' => 'db_quiz',
         'username' => 'root',
         'password' => ''
