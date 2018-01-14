@@ -16,9 +16,19 @@ class Database
     private $_sql = '';
 
     /**
-     * @var array $where
+     * @var array $_where
      */
-    private $where = [];
+    private $_where = [];
+
+    /**
+     * @var array $_orderBy
+     */
+    private $_orderBy = [];
+
+    /**
+     * @var array $_limit
+     */
+    private $_limit = [];
 
     /**
      * Database constructor, contains database credentials.
@@ -96,7 +106,7 @@ class Database
     }
 
     /**
-     * Insert method, return $this to allow chaining.
+     * Insert method, returns $this to allow chaining.
      * @param $table
      * @param array $field
      * @return $this
@@ -115,7 +125,7 @@ class Database
     }
 
     /**
-     * Update method, return $this to allow chaining.
+     * Update method, returns $this to allow chaining.
      * @param $table
      * @param array $field
      * @return $this
@@ -131,7 +141,7 @@ class Database
     }
 
     /**
-     * Delete method, return $this to allow chaining.
+     * Delete method, returns $this to allow chaining.
      * @return $this
      */
     public function delete()
@@ -141,7 +151,7 @@ class Database
     }
 
     /**
-     * Select method, return $this to allow chaining.
+     * Select method, returns $this to allow chaining.
      * @param $columns
      * @return $this
      */
@@ -160,7 +170,7 @@ class Database
     }
 
     /**
-     * From method, return $this to allow chaining.
+     * From method, returns $this to allow chaining.
      * @param $tables
      * @return $this
      */
@@ -179,14 +189,14 @@ class Database
     }
 
     /**
-     * Where method, return $this to allow chaining.
+     * Where method, returns $this to allow chaining.
      * @param $conditions
      * @param string $glue
      * @return $this
      */
     public function where($conditions, $glue = 'AND')
     {
-        if (empty($this->where)) {
+        if (empty($this->_where)) {
             $this->append(' WHERE');
             $this->append($conditions);
         } else {
@@ -197,19 +207,43 @@ class Database
         return $this;
     }
 
-    public function orderBy($field = [])
+    /**
+     * OrderBy method, returns $this to allow chaining.
+     * @param $columns
+     * @return $this
+     */
+    public function orderBy($columns)
     {
-        $colName = '';
-        foreach ($field as $value) {
-            $colName .= ',' . $value;
+        if (empty($this->_orderBy)) {
+            $this->_orderBy[] = ' ORDER BY ';
         }
-        $this->_sql .= ' ORDER BY ' . ltrim($colName, ',');
+        $i = 1;
+        foreach (func_get_args() as $column) {
+            $this->_orderBy[] = ($i > 1) ? ', ' . $column : $column;
+            $i++;
+        }
+
         return $this;
     }
 
-    public function limit($startPosition, $numOfRecords)
+    /**
+     * Limit method, returns $this to allow chaining.
+     * @param $limit
+     * @param null $offset
+     * @return $this
+     */
+    public function limit($limit, $offset = null)
     {
-        $this->_sql .= ' LIMIT ' . $startPosition . ', ' . $numOfRecords;
+        if (empty($this->_limit)) {
+            $this->_limit[] = ' LIMIT ';
+        }
+
+        if (!is_null($offset)) {
+            $this->_limit[] = $offset . ', ' . $limit;
+        } else {
+            $this->_limit[] = $limit;
+        }
+
         return $this;
     }
 
@@ -220,14 +254,38 @@ class Database
     public function append($element)
     {
         if (!is_array($element)) {
-            $this->where = array_merge($this->where, [$element]);
+            $this->_where = array_merge($this->_where, [$element]);
         } else {
-            $this->where = array_merge($this->where, $element);
+            $this->_where = array_merge($this->_where, $element);
         }
     }
 
     /**
-     * Prepare Query.
+     * Builds complete query, returns current query.
+     * @return string
+     */
+    public function setQuery()
+    {
+        if (!empty($this->_where)) {
+            $this->_sql .= implode(' ', $this->_where);
+            $this->destroy($this->_where);
+        }
+
+        if (!empty($this->_orderBy)) {
+            $this->_sql .= implode($this->_orderBy);
+            $this->destroy($this->_orderBy);
+        }
+
+        if (!empty($this->_limit)) {
+            $this->_sql .= implode($this->_limit);
+            $this->destroy($this->_limit);
+        }
+
+        return $this->_sql;
+    }
+
+    /**
+     * Prepare query.
      * @param $query
      * @return mysqli_stmt
      */
@@ -237,7 +295,7 @@ class Database
     }
 
     /**
-     * Execute Query.
+     * Execute query.
      * @param $command
      * @param null $dataType
      * @param array $values
@@ -247,16 +305,16 @@ class Database
     {
         $stmt = $this->prepareQuery($this->_sql);
         $stmt->bind_param($dataType, ...$values);
+        $exec = $stmt->execute();
+
         switch ($command) {
             case 'crud':
-                return $stmt->execute();
+                return $exec;
                 break;
             case 'getResult':
-                $stmt->execute();
                 return $stmt->get_result();
                 break;
             case 'numRows':
-                $stmt->execute();
                 $stmt->store_result();
                 return $stmt->num_rows;
         }
@@ -278,6 +336,15 @@ class Database
         }
 
         return (!$getArray) ? $result->fetch_object() : $result->fetch_assoc();
+    }
+
+    /**
+     * Unset object's properties.
+     * @param $elements
+     */
+    public function destroy($elements)
+    {
+        unset($elements);
     }
 
     /**
