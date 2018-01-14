@@ -3,7 +3,7 @@
  * @author: Tuan Nguyen
  */
 
-class Database
+abstract class Database
 {
     /**
      * @var mysqli $_conn
@@ -108,35 +108,38 @@ class Database
     /**
      * Insert method, returns $this to allow chaining.
      * @param $table
-     * @param array $field
+     * @param array $columns
+     * @param string $glue
      * @return $this
      */
-    public function insert($table, $field = [])
+    public function insert($table, $columns = [], $glue = '?')
     {
-        $columnList = '';
-        $valueList = '';
-        foreach ($field as $key => $value) {
-            $columnList .= ',' . $key;
-            $valueList .= ",'" . $this->mRealEscapeString($value) . "'";
+        $columnList = null;
+        $params = null;
+        foreach ($columns as $column) {
+            $columnList .= ',' . $column;
+            $params .= ', ' . $glue;
         }
+        $this->_sql = 'INSERT INTO ' . $table . '(' . ltrim($columnList, ',') . ') VALUES (' . ltrim($params, ',') . ')';
 
-        $this->_sql = 'INSERT INTO ' . $table . '(' . trim($columnList, ',') . ') VALUES (' . trim($valueList, ',') . ')';
         return $this;
     }
 
     /**
      * Update method, returns $this to allow chaining.
      * @param $table
-     * @param array $field
+     * @param array $columns
+     * @param string $glue
      * @return $this
      */
-    public function update($table, $field = [])
+    public function update($table, $columns = [], $glue = '?')
     {
-        $columnValue = '';
-        foreach ($field as $key => $value) {
-            $columnValue .= $key . " = '" . $this->mRealEscapeString($value) . "',";
+        $columnList = null;
+        foreach ($columns as $column) {
+            $columnList .= $column . ' = ' . $glue . ', ';
         }
-        $this->_sql = 'UPDATE ' . $table . ' SET ' . trim($columnValue, ',');
+        $this->_sql = 'UPDATE ' . $table . ' SET ' . rtrim($columnList, ', ');
+
         return $this;
     }
 
@@ -268,20 +271,20 @@ class Database
     {
         if (!empty($this->_where)) {
             $this->_sql .= implode(' ', $this->_where);
-            $this->destroy($this->_where);
+            $this->_where = [];
         }
 
         if (!empty($this->_orderBy)) {
             $this->_sql .= implode($this->_orderBy);
-            $this->destroy($this->_orderBy);
+            $this->_orderBy = [];
         }
 
         if (!empty($this->_limit)) {
             $this->_sql .= implode($this->_limit);
-            $this->destroy($this->_limit);
+            $this->_limit = [];
         }
 
-        return $this->_sql;
+        return $this;
     }
 
     /**
@@ -336,15 +339,6 @@ class Database
         }
 
         return (!$getArray) ? $result->fetch_object() : $result->fetch_assoc();
-    }
-
-    /**
-     * Unset object's properties.
-     * @param $elements
-     */
-    public function destroy($elements)
-    {
-        unset($elements);
     }
 
     /**
