@@ -21,6 +21,17 @@ class BaseController
         return json_decode($jsonData, $getArray);
     }
 
+    public static function getClassConstants($className)
+    {
+        if (class_exists($className)) {
+            $reflectionClass = new \ReflectionClass($className);
+            return $reflectionClass->getConstants();
+        }
+
+        return [];
+    }
+
+
     public function toInteger($value)
     {
         return (int)$value;

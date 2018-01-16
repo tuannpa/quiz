@@ -1,9 +1,8 @@
 <?php
 if (isset($_POST['btnLogin'])):
     $authController = new AuthController($baseInstance->queryHelper);
-    $username = $authController->queryHelper->mRealEscapeString($_POST['username']);
-    $password = md5($authController->queryHelper->mRealEscapeString($_POST['password']));
-    $user = $authController->loginAuth($username, $password);
+    $user = $authController->loginAuth($_POST['username'], md5($_POST['password']));
+    var_dump($user); die;
     if (!$user):
         $message = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng!';
     else:
@@ -15,20 +14,20 @@ endif;
     <div class="col-md-5 div-center">
         <form method="POST" action="" class="login-form">
             <div class="form-group login-heading">
-                <h4 class="text-center">Đăng Nhập Hệ Thống</h4>
+                <h4 class="text-center">Authentication</h4>
             </div>
 
             <div class="form-group">
-                <label for="username">Tên Đăng Nhập</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Tên Đăng nhập"
-                       required oninvalid="this.setCustomValidity('Vui lòng Nhập Tên Đăng Nhập')"
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                       required oninvalid="this.setCustomValidity('Please enter username')"
                        oninput="setCustomValidity('')">
             </div>
 
             <div class="form-group">
-                <label for="password">Mật Khẩu</label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Mật Khẩu"
-                       required oninvalid="this.setCustomValidity('Vui lòng Nhập Mật Khẩu')"
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" id="password" placeholder="Password"
+                       required oninvalid="this.setCustomValidity('Please enter password')"
                        oninput="setCustomValidity('')">
             </div>
 
@@ -39,11 +38,11 @@ endif;
             <?php endif; ?>
 
             <div class="form-group text-center" data-ng-controller="registerController">
-                <a href="javascript:void(0);" data-ng-click="openRegisterForm()">Đăng ký tài khoản</a>
+                <a href="javascript:void(0);" data-ng-click="openRegisterForm()">Sign up</a>
             </div>
 
             <div class="form-group">
-                <button type="submit" name="btnLogin" class="btn btn-secondary btn-login">Đăng Nhập</button>
+                <button type="submit" name="btnLogin" class="btn btn-secondary btn-login">Login</button>
             </div>
         </form>
     </div>

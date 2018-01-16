@@ -1,5 +1,5 @@
 <?php
-if (AuthController::hasSignedIn()):
+if (AuthController::verifyToken()):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
     $homeController = new HomeController($baseInstance->queryHelper);

@@ -5,7 +5,7 @@
 		</div>
 
 		<div class="col-sm-7 col-md-10">
-			<h3 class="text-center header-title">HỆ THỐNG THI TRẮC NGHIỆM TRỰC TUYẾN</h3>
+			<h3 class="text-center header-title">QUIZ SYSTEM</h3>
 		</div>
 	</div>
 </div>

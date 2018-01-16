@@ -5,6 +5,8 @@
 
 class Config
 {
+    const SECRET_KEY = 'a52bef76pu8t6';
+
     private static $config = [
         'host' => 'localhost',
         'dbName' => 'db_quiz',
@@ -31,6 +33,11 @@ class Config
         if (!defined('HELPER_DIR')) {
             $helperDir = str_replace('\\', '/', __DIR__ . '/core/Helper' . DIRECTORY_SEPARATOR);
             define('HELPER_DIR', $helperDir);
+        }
+
+        if (!defined('LIB_DIR')) {
+            $libDir = str_replace('\\', '/', __DIR__ . '/lib' . DIRECTORY_SEPARATOR);
+            define('LIB_DIR', $libDir);
         }
 
         if (!defined('BLOCK_DIR')) {
