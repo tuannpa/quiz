@@ -18,16 +18,18 @@ class QuizController extends BaseController
         return 0;
     }
 
-    public function generateRandomQuestions()
+    // TODO: Remove default value of $categoryId later
+    public function generateRandomQuestions($categoryId = 1)
     {
-        $randomQuestions = $this->queryHelper
-            ->select('id')
-            ->from('questions')
-            ->where([
-                'category_id=' => 1
-            ])
-            ->orderBy(['RAND()'])
-            ->method('many');
+        $query = $this->queryHelper->select('id')
+                                   ->from('questions')
+                                   ->where('category_id = ?')
+                                   ->orderBy('RAND()')
+                                   ->setQuery()
+                                   ->execQuery('getResult', 'i', [$categoryId]);
+
+        $randomQuestions = $this->queryHelper->fetchData($query);
+
         if (!isset($_SESSION['firstInit'])) {
             $_SESSION['firstInit'] = true;
             foreach ($randomQuestions as $question) {
@@ -40,14 +42,8 @@ class QuizController extends BaseController
 
     public function getFirstQuestion()
     {
-        $firstQuestion = $this->queryHelper
-            ->select()
-            ->from('questions')
-            ->where([
-                'id=' => (isset($_SESSION['currentQuestion'])) ? $_SESSION['currentQuestion'] : current($_SESSION['questions'])
-            ])
-            ->method('one');
-        return $this->toObject($firstQuestion);
+        $id = (isset($_SESSION['currentQuestion'])) ? $_SESSION['currentQuestion'] : current($_SESSION['questions']);
+        return $this->queryHelper->findById('questions', $id);
     }
 
     public function getTotalQuestions()

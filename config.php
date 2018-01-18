@@ -18,7 +18,7 @@ class Config
         return self::$config;
     }
 
-    public static function getDir()
+    public static function loadDirectories()
     {
         if (!defined('CONTROLLER_DIR')) {
             $controllerDir = str_replace('\\', '/', __DIR__ . '/core/Controller' . DIRECTORY_SEPARATOR);

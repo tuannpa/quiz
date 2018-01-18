@@ -22,6 +22,11 @@ class TemplateHelper
         return false;
     }
 
+    /**
+     * @param array $placeholderValue
+     * @return string
+     * @throws Exception
+     */
     public function renderTemplate($placeholderValue = []) {
         foreach ($placeholderValue as $placeholder => $value) {
             $formattedPlaceholder = sprintf('[%s]', $placeholder);

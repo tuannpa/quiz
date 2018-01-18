@@ -3,7 +3,7 @@ session_start();
 require_once '../ajaxConfig.php';
 require_once CONTROLLER_DIR . '/QuizController.php';
 require_once HELPER_DIR . 'TemplateHelper.php';
-$params = BaseController::getRequestParams();
+$params = BaseController::getRequestPayload();
 $controller = new QuizController(new QueryHelper());
 $request = $controller->getUrlParams();
 
@@ -16,7 +16,7 @@ $_SESSION['answer'][$params->currentQuestionId] = $params->userChoice;
 foreach ($_SESSION['questions'] as $key => $questionId) {
     if ($request->task == 'prev') {
         if ($params->currentQuestionId == $questionId) {
-            (($key - 1) != 0) ? $showBtnPrev = true : $showBtnPrev = false;
+            $showBtnPrev = (($key - 1) != 0) ? true : false;
             $prevQuestionId = $_SESSION['questions'][$key - 1];
             if (array_key_exists($prevQuestionId, $_SESSION['answer'])) {
                 $selectedChoice = $_SESSION['answer'][$prevQuestionId];
@@ -25,15 +25,15 @@ foreach ($_SESSION['questions'] as $key => $questionId) {
         }
     } else {
         if ($params->currentQuestionId == $questionId) {
-            ($key >= 0) ? $showBtnPrev = true : $showBtnPrev = false;
-            ($key == (count($_SESSION['questions']) - 1)) ? $_SESSION['endOfTest'] = true : null;
-            ($key == (count($_SESSION['questions']) - 1)) ? $totalTime = $params->totalTime : null;
+            $showBtnPrev = ($key >= 0) ? true : false;
+            $_SESSION['endOfTest'] = ($key == (count($_SESSION['questions']) - 1)) ? true : null;
+            $totalTime = ($key == (count($_SESSION['questions']) - 1)) ? $params->totalTime : null;
             $nextQuestionId = (!isset($_SESSION['endOfTest'])) ? $_SESSION['questions'][$key + 1] : null;
             if (array_key_exists($nextQuestionId, $_SESSION['answer'])) {
                 $selectedChoice = $_SESSION['answer'][$nextQuestionId];
             }
             $_SESSION['position'] = (!isset($_SESSION['endOfTest'])) ? $key + 2 : count($_SESSION['questions']);
-            $showBtnBackToHome = (isset($_SESSION['endOfTest'])) ? $showBtnBackToHome = true : null;
+            $showBtnBackToHome = (isset($_SESSION['endOfTest'])) ? true : null;
             if (isset($_SESSION['endOfTest'])) {
                 $showBtnPrev = false;
             }
@@ -48,14 +48,8 @@ if (isset($nextQuestionId)) {
 }
 
 if (!isset($_SESSION['endOfTest'])) {
-    $question = $controller->queryHelper
-        ->select()
-        ->from('questions')
-        ->where([
-            'id=' => isset($nextQuestionId) ? $nextQuestionId : $prevQuestionId
-        ])
-        ->method('one');
-    $question = $controller->toObject($question);
+    $id = isset($nextQuestionId) ? $nextQuestionId : $prevQuestionId;
+    $question = $controller->queryHelper->findById('questions', $id);
 
     $questionTemplate = TemplateHelper::setFilePath('template/questionTemplate.html')
         ->renderTemplate([
@@ -73,17 +67,8 @@ if (!isset($_SESSION['endOfTest'])) {
             'totalQuestions' => $params->totalQuestions
         ]);
 } else {
-    $allQuestions = $controller->queryHelper
-        ->select([
-            'id', 'answer'
-        ])
-        ->from('questions')
-        ->where([
-            'category_id=' => 1
-        ])
-        ->method('many');
-
-    $allQuestions = $controller->toObject($allQuestions);
+    // TODO: Refactor: check if id is changeable to make this more dynamically
+    $allQuestions = $controller->queryHelper->findById('questions', 1, 'category_id');
     $correctAnswer = 0;
     $incorrectAnswer = 0;
     foreach ($allQuestions as $question) {
@@ -96,15 +81,20 @@ if (!isset($_SESSION['endOfTest'])) {
         }
     }
     $score = $correctAnswer * 0.5;
-    $controller->queryHelper
-        ->insert('quiz_result', [
-            'user_id' => $_SESSION['user']['id'],
-            'correct_answer' => $correctAnswer,
-            'incorrect_answer' => $incorrectAnswer,
-            'score' => $score,
-            'finish_time' => $totalTime
-        ])
-        ->method('crud');
+    // TODO: User ID, change $id when login authentication is done
+    $controller->queryHelper->insert('quiz_result', [
+        'user_id',
+        'correct_answer',
+        'incorrect_answer',
+        'score',
+        'finish_time'
+    ])->execQuery('crud','iiiii', [
+        $id,
+        $correctAnswer,
+        $incorrectAnswer,
+        $score,
+        $totalTime
+    ]);
     $endOfTestTemplate = TemplateHelper::setFilePath('template/endOfTestTemplate.html')
         ->renderTemplate([
             'correctAnswer' => $correctAnswer,

@@ -14,13 +14,13 @@ class QueryHelper extends Database
         parent::__construct($config['host'], $config['username'], $config['password'], $config['dbName']);
     }
 
-    public function findById($table, $id)
+    public function findById($table, $id, $column = 'id')
     {
         $query = $this->select('*')
-                        ->from($table)
-                        ->where('id = ?')
-                        ->setQuery()
-                        ->execQuery('getResult', 'i', [$id]);
+                      ->from($table)
+                      ->where($column . ' = ?')
+                      ->setQuery()
+                      ->execQuery('getResult', 'i', [$id]);
 
         return $this->fetchData($query);
     }
@@ -28,8 +28,8 @@ class QueryHelper extends Database
     public function all($table)
     {
         $query = $this->select('*')
-                        ->from($table)
-                        ->execQuery('getResult');
+                      ->from($table)
+                      ->execQuery('getResult');
 
         return $this->fetchData($query);
     }

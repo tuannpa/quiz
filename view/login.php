@@ -1,10 +1,10 @@
 <?php
 if (isset($_POST['btnLogin'])):
     $authController = new AuthController($baseInstance->queryHelper);
-    $user = $authController->loginAuth($_POST['username'], md5($_POST['password']));
-    var_dump($user); die;
-    if (!$user):
-        $message = 'Tên Đăng Nhập hoặc Mật Khẩu không đúng!';
+    $token = $authController->loginAuth($_POST['username'], md5($_POST['password']));
+    var_dump($token); die;
+    if (is_null($token)):
+        $message = 'Incorrect username or password';
     else:
         header('Location:index.php');
     endif;
@@ -19,15 +19,25 @@ endif;
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Username"
-                       required oninvalid="this.setCustomValidity('Please enter username')"
+                <input type="text"
+                       class="form-control"
+                       id="username"
+                       name="username"
+                       placeholder="Username"
+                       required
+                       oninvalid="this.setCustomValidity('Please enter username')"
                        oninput="setCustomValidity('')">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password"
-                       required oninvalid="this.setCustomValidity('Please enter password')"
+                <input type="password"
+                       name="password"
+                       class="form-control"
+                       id="password"
+                       placeholder="Password"
+                       required
+                       oninvalid="this.setCustomValidity('Please enter password')"
                        oninput="setCustomValidity('')">
             </div>
 
@@ -37,8 +47,10 @@ endif;
                 </div>
             <?php endif; ?>
 
-            <div class="form-group text-center" data-ng-controller="registerController">
-                <a href="javascript:void(0);" data-ng-click="openRegisterForm()">Sign up</a>
+            <div class="form-group text-center"
+                 data-ng-controller="registerController">
+                <a href="javascript:void(0);"
+                   data-ng-click="openRegisterForm()">Sign up</a>
             </div>
 
             <div class="form-group">

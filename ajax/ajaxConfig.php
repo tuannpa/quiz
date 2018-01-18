@@ -4,4 +4,4 @@ if (!defined('APPLICATION_PATH')) {
     define('APPLICATION_PATH', $appDir);
 }
 require_once APPLICATION_PATH . 'config.php';
-Config::getDir();
+Config::loadDirectories();

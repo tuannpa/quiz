@@ -4,6 +4,11 @@
  */
 
 ob_start();
+session_start();
+if (!defined('APPLICATION_PATH')) {
+    $homeDir = str_replace('\\', '/', __DIR__ . DIRECTORY_SEPARATOR);
+    define('APPLICATION_PATH', $homeDir);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -24,13 +29,8 @@ ob_start();
 <body data-ng-app="myApp">
     <div class="container">
         <?php
-        session_start();
-        if (!defined('APPLICATION_PATH')) {
-            $homeDir = str_replace('\\', '/', __DIR__ . DIRECTORY_SEPARATOR);
-            define('APPLICATION_PATH', $homeDir);
-        }
         require_once APPLICATION_PATH . 'config.php';
-        Config::getDir();
+        Config::loadDirectories();
         require_once CONTROLLER_DIR . 'Base/BaseController.php';
         require_once CONTROLLER_DIR . 'AuthController.php';
         $baseInstance = new BaseController(new QueryHelper());

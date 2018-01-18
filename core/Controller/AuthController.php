@@ -6,7 +6,7 @@ require_once APPLICATION_PATH . 'config.php';
 
 class AuthController extends BaseController
 {
-    private $_token = [];
+    private $_payload = [];
 
     public function loginAuth($username, $password)
     {
@@ -26,19 +26,20 @@ class AuthController extends BaseController
                 $password
             ]);
             $userInfo = $this->queryHelper->fetchData($result);
-            $this->_token['id'] = $userInfo->id;
-            $this->_token['username'] = $userInfo->username;
-            $this->_token['name'] = $userInfo->name;
-            $this->_token['dateOfBirth'] = $userInfo->date_of_birth;
-            $this->_token['gender'] = $userInfo->gender;
-            $this->_token['role'] = $userInfo->role;
+            $this->_payload['userInfo'] = [
+                'id' => $userInfo->id,
+                'username' => $userInfo->username,
+                'name' => $userInfo->name,
+                'dateOfBirth' => $userInfo->date_of_birth,
+                'gender' => $userInfo->gender,
+                'role' => $userInfo->role
+            ];
 
-            $jsonWebToken = \Firebase\JWT\JWT::encode($this->_token, Config::SECRET_KEY);
-
-            return $jsonWebToken;
+            // Token
+            return \Firebase\JWT\JWT::encode($this->_payload, Config::SECRET_KEY);
         }
 
-        return http_response_code(401);
+        return null;
     }
 
     public static function verifyToken()

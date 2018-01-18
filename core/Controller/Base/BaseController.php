@@ -15,7 +15,7 @@ class BaseController
         $this->queryHelper = $queryHelper;
     }
 
-    public static function getRequestParams($getArray = false)
+    public static function getRequestPayload($getArray = false)
     {
         $jsonData = file_get_contents("php://input");
         return json_decode($jsonData, $getArray);
