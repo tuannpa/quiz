@@ -34,6 +34,7 @@ if (!defined('APPLICATION_PATH')) {
         require_once CONTROLLER_DIR . 'Base/BaseController.php';
         require_once CONTROLLER_DIR . 'AuthController.php';
         $baseInstance = new BaseController(new QueryHelper());
+        $authController = new AuthController($baseInstance->queryHelper);
         include BLOCK_DIR . 'header.php';
         include BLOCK_DIR . 'menu.php';
         $urlParams = $baseInstance->getUrlParams();

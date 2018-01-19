@@ -8,11 +8,8 @@ class QuizController extends BaseController
     {
         if (isset($_SESSION['currentQuestion']) && isset($_SESSION['answer'])) {
             if (array_key_exists($_SESSION['currentQuestion'], $_SESSION['answer'])) {
-                $selectedChoice = $_SESSION['answer'][$_SESSION['currentQuestion']];
-            } else {
-                $selectedChoice = 0;
+                return $_SESSION['answer'][$_SESSION['currentQuestion']];
             }
-            return $selectedChoice;
         }
 
         return 0;
@@ -29,18 +26,17 @@ class QuizController extends BaseController
                                    ->execQuery('getResult', 'i', [$categoryId]);
 
         $randomQuestions = $this->queryHelper->fetchData($query);
-
         if (!isset($_SESSION['firstInit'])) {
             $_SESSION['firstInit'] = true;
             foreach ($randomQuestions as $question) {
-                $_SESSION['questions'][] = $this->toInteger($question['id']);
+                $_SESSION['questions'][] = $this->toInteger($question->id);
             }
         }
 
         return $_SESSION['questions'];
     }
 
-    public function getFirstQuestion()
+    public function getCurrentQuestion()
     {
         $id = (isset($_SESSION['currentQuestion'])) ? $_SESSION['currentQuestion'] : current($_SESSION['questions']);
         return $this->queryHelper->findById('questions', $id);

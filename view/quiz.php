@@ -1,12 +1,12 @@
 <?php
-if (AuthController::hasSignedIn()):
+if (!is_bool($userInfo = AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'QuizController.php';
 
     if (!isset($_SESSION['endOfTest'])):
         $quizController = new QuizController($baseInstance->queryHelper);
         $questions = $quizController->generateRandomQuestions();
-        $firstQuestion = $quizController->getFirstQuestion();
-        $firstQuestion->id = $quizController->toInteger($firstQuestion->id);
+        $currentQuestion = $quizController->getCurrentQuestion();
+        $currentQuestion->id = $quizController->toInteger($currentQuestion->id);
         ?>
         <div class="preview" data-ng-controller="quizController">
 
@@ -15,12 +15,12 @@ if (AuthController::hasSignedIn()):
             </h4>
 
             <div class="questionsBox"
-                 data-ng-init="currentQuestionId = <?= $firstQuestion->id ?>; numOfQuestions = <?= $quizController->getTotalQuestions() ?>; selectedAnswer = <?= QuizController::getQuestionChoice() ?>"
+                 data-ng-init="currentQuestionId = <?= $currentQuestion->id ?>; numOfQuestions = <?= $quizController->getTotalQuestions() ?>; selectedAnswer = <?= QuizController::getQuestionChoice() ?>"
                  cg-busy="{promise:loadQuestionPromise,message:'Đang tải..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
 
                 <div class="ajaxReplace">
                     <div class="questions">Câu <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
-                        . <?= $firstQuestion->content ?>
+                        . <?= $currentQuestion->content ?>
                     </div>
                     <ul class="answerList">
                         <li>
@@ -29,7 +29,7 @@ if (AuthController::hasSignedIn()):
                                        name="answerGroup"
                                        class="pointer-on-hover"
                                        value="1">
-                                <strong>A. </strong><?= $firstQuestion->first_choice ?>
+                                <strong>A. </strong><?= $currentQuestion->first_choice ?>
                             </label>
                         </li>
                         <li>
@@ -38,7 +38,7 @@ if (AuthController::hasSignedIn()):
                                        name="answerGroup"
                                        class="pointer-on-hover"
                                        value="2">
-                                <strong>B. </strong><?= $firstQuestion->second_choice ?>
+                                <strong>B. </strong><?= $currentQuestion->second_choice ?>
                             </label>
                         </li>
                         <li>
@@ -47,7 +47,7 @@ if (AuthController::hasSignedIn()):
                                        name="answerGroup"
                                        class="pointer-on-hover"
                                        value="3">
-                                <strong>C. </strong><?= $firstQuestion->third_choice ?>
+                                <strong>C. </strong><?= $currentQuestion->third_choice ?>
                             </label>
                         </li>
                         <li>
@@ -56,7 +56,7 @@ if (AuthController::hasSignedIn()):
                                        name="answerGroup"
                                        class="pointer-on-hover"
                                        value="4">
-                                <strong>D. </strong><?= $firstQuestion->fourth_choice ?>
+                                <strong>D. </strong><?= $currentQuestion->fourth_choice ?>
                             </label>
                         </li>
                     </ul>
@@ -94,7 +94,7 @@ if (AuthController::hasSignedIn()):
         </div>
 <?php
     else:
-        header('Location:?page=home');
+        header('Location:index.php');
     endif;
 else:
     header('Location:?page=login');

@@ -1,2 +1,3 @@
 <?php
-AuthController::logout();
+$authController->logout();
+header('Location:index.php');

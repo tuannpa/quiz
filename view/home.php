@@ -1,17 +1,16 @@
 <?php
-if (AuthController::verifyToken()):
+if (!is_bool($userInfo = AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
     $homeController = new HomeController($baseInstance->queryHelper);
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
     endif;
-    $userInfo = $homeController->getUserInfo('user_information');
     $birthday = (!empty($userInfo->date_of_birth)) ? date('d/m/Y', strtotime($userInfo->date_of_birth)) : 'Không có dữ liệu..';
     $gender = ($userInfo->gender == 1) ? 'Nam' : 'Nữ';
     ?>
     <div class="home" data-ng-controller="homeController">
-        <h4>Xin chào, <?= $_SESSION['user']['username'] ?>!</h4>
+        <h4>Xin chào, <?= $userInfo->name ?>!</h4>
         <hr/>
         <p><strong>Thông tin của bạn:</strong></p>
 
@@ -27,11 +26,6 @@ if (AuthController::verifyToken()):
             </div>
 
             <div class="form-group">
-                <label for="usercode">Mã Tài Khoản</label>
-                <input class="form-control user-field" value="<?= $userInfo->user_code ?>" id="usercode" disabled="">
-            </div>
-
-            <div class="form-group">
                 <label for="birthday">Ngày Sinh</label>
                 <input class="form-control user-field" value="<?= $birthday ?>" id="birthday" disabled="">
             </div>
@@ -43,7 +37,7 @@ if (AuthController::verifyToken()):
 
             <div class="form-group">
                 <label for="username">Tên Tài Khoản</label>
-                <input class="form-control user-field" value="<?= $_SESSION['user']['username'] ?>" id="username"
+                <input class="form-control user-field" value="<?= $userInfo->username ?>" id="username"
                        disabled="">
             </div>
 

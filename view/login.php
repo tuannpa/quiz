@@ -1,12 +1,10 @@
 <?php
 if (isset($_POST['btnLogin'])):
-    $authController = new AuthController($baseInstance->queryHelper);
     $token = $authController->loginAuth($_POST['username'], md5($_POST['password']));
-    var_dump($token); die;
-    if (is_null($token)):
-        $message = 'Incorrect username or password';
+    if (!AuthController::setAuthToken($token)):
+        $message = 'Incorrect username or password!';
     else:
-        header('Location:index.php');
+        header('Location: index.php');
     endif;
 endif;
 ?>
