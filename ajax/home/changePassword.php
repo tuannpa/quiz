@@ -5,8 +5,9 @@ require_once CONTROLLER_DIR . 'AuthController.php';
 
 $controller = new HomeController(new QueryHelper());
 
-if (!is_bool($userInfo = AuthController::verifyToken())) {
+if (!is_bool($decryptedToken = AuthController::verifyToken())) {
     $params = HomeController::getRequestPayload();
+    $userInfo = $decryptedToken->userInfo;
     $state = $controller->queryHelper->update('users',['password'])
         ->where('id = ?')
         ->setQuery()

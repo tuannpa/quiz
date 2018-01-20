@@ -3,6 +3,9 @@
  * @author: Tuan Nguyen
  */
 
+/**
+ * Class Database
+ */
 abstract class Database
 {
     /**

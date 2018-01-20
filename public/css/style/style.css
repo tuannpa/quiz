@@ -58,6 +58,10 @@ body {
     padding: 1.5em;
 }
 
+.btn-sign-out {
+    margin-top: 0.7em;
+}
+
 .logout-popup {
     max-width: 400px;
     margin: 1em 0;

@@ -7,9 +7,10 @@ require_once CONTROLLER_DIR . 'AuthController.php';
 
 $controller = new QuizController(new QueryHelper());
 
-if (!is_bool($userInfo = AuthController::verifyToken())) {
+if (!is_bool($decryptedToken = AuthController::verifyToken())) {
     $params = BaseController::getRequestPayload();
     $request = $controller->getUrlParams();
+    $userInfo = $decryptedToken->userInfo;
 
     if (!isset($_SESSION['answer'])) {
         $_SESSION['answer'] = [];
@@ -22,9 +23,7 @@ if (!is_bool($userInfo = AuthController::verifyToken())) {
             if ($params->currentQuestionId == $questionId) {
                 $showBtnPrev = (($key - 1) != 0) ? true : false;
                 $prevQuestionId = $_SESSION['questions'][$key - 1];
-                if (array_key_exists($prevQuestionId, $_SESSION['answer'])) {
-                    $selectedChoice = $_SESSION['answer'][$prevQuestionId];
-                }
+                $selectedChoice = $controller->getSelectedChoice($prevQuestionId);
                 $_SESSION['position'] = $key;
             }
         } else {
@@ -33,9 +32,7 @@ if (!is_bool($userInfo = AuthController::verifyToken())) {
                 $_SESSION['endOfTest'] = ($key == (count($_SESSION['questions']) - 1)) ? true : null;
                 $totalTime = ($key == (count($_SESSION['questions']) - 1)) ? $params->totalTime : null;
                 $nextQuestionId = (!isset($_SESSION['endOfTest'])) ? $_SESSION['questions'][$key + 1] : null;
-                if (array_key_exists($nextQuestionId, $_SESSION['answer'])) {
-                    $selectedChoice = $_SESSION['answer'][$nextQuestionId];
-                }
+                $selectedChoice = $controller->getSelectedChoice($nextQuestionId);
                 $_SESSION['position'] = (!isset($_SESSION['endOfTest'])) ? $key + 2 : count($_SESSION['questions']);
                 $showBtnBackToHome = (isset($_SESSION['endOfTest'])) ? true : null;
                 if (isset($_SESSION['endOfTest'])) {
@@ -85,14 +82,14 @@ if (!is_bool($userInfo = AuthController::verifyToken())) {
             }
         }
         $score = $correctAnswer * 0.5;
-        // TODO: User ID, change $id when login authentication is done
+
         $controller->queryHelper->insert('quiz_result', [
             'user_id',
             'correct_answer',
             'incorrect_answer',
             'score',
             'finish_time'
-        ])->execQuery('crud', 'iiiii', [
+        ])->execQuery('crud', 'iiidi', [
             $userInfo->id,
             $correctAnswer,
             $incorrectAnswer,

@@ -1,8 +1,9 @@
 <?php
-if (!is_bool($userInfo = AuthController::verifyToken())):
+if (!is_bool($decryptedToken = AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
     $homeController = new HomeController($baseInstance->queryHelper);
+    $userInfo = $decryptedToken->userInfo;
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
     endif;
@@ -10,39 +11,39 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
     $gender = ($userInfo->gender == 1) ? 'Nam' : 'Nữ';
     ?>
     <div class="home" data-ng-controller="homeController">
-        <h4>Xin chào, <?= $userInfo->name ?>!</h4>
+        <h4>Hi, <?= $userInfo->name ?>!</h4>
         <hr/>
-        <p><strong>Thông tin của bạn:</strong></p>
+        <p><strong>Account information:</strong></p>
 
         <!-- cg-busy -->
         <form name="userForm"
               class="userForm"
               data-ng-submit="changePassword(userForm)"
-              cg-busy="{promise:updatePasswordPromise,message:'Đang thực hiện..',backdrop:true,minDuration:1000}"
+              cg-busy="{promise:updatePasswordPromise,message:'Loading..',backdrop:true,minDuration:1000}"
               novalidate>
             <div class="form-group">
-                <label for="name">Họ và Tên</label>
+                <label for="name">Name</label>
                 <input type="text" class="form-control user-field" value="<?= $userInfo->name ?>" id="name" disabled>
             </div>
 
             <div class="form-group">
-                <label for="birthday">Ngày Sinh</label>
+                <label for="birthday">Date of birth</label>
                 <input class="form-control user-field" value="<?= $birthday ?>" id="birthday" disabled="">
             </div>
 
             <div class="form-group">
-                <label for="gender">Giới Tính</label>
+                <label for="gender">Gender</label>
                 <input class="form-control user-field" value="<?= $gender ?>" id="gender" disabled="">
             </div>
 
             <div class="form-group">
-                <label for="username">Tên Tài Khoản</label>
+                <label for="username">Username</label>
                 <input class="form-control user-field" value="<?= $userInfo->username ?>" id="username"
                        disabled="">
             </div>
 
             <div class="form-group">
-                <label for="password">Thay đổi Mật khẩu</label>
+                <label for="password">Change your password</label>
                 <div>
                     <input type="password"
                            id="password"
@@ -76,7 +77,7 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
                 </div>
             </div>
 
-            <label for="password-again">Xác nhận Mật khẩu</label>
+            <label for="password-again">Password Confirmation</label>
             <div class="input-group">
                 <input type="password"
                        id="password-again"
@@ -100,7 +101,7 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
                 </div>
                 <span class="input-group-btn">
 				    <button class="btn btn-secondary pointer-on-hover"
-                            type="submit">Thay đổi</button>
+                            type="submit">Update</button>
 			    </span>
             </div>
         </form>
@@ -110,26 +111,26 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
                 toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true, 'animation-class': 'toast-bottom-right'}"></toaster-container>
 
         <hr/>
-        <h4>Đăng xuất Hệ thống</h4>
-        <button class="btn btn-primary pointer-on-hover" type="button" data-toggle="collapse"
+        <h4>System action</h4>
+        <button class="btn btn-primary pointer-on-hover fa fa-sign-out btn-sign-out" type="button" data-toggle="collapse"
                 data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Đăng Xuất
+            Sign out
         </button>
         <div class="collapse logout-popup" id="collapseExample">
             <div class="card card-body">
                 <div class="row" style="margin: 0 auto;">
                     <div class="col-md-12 reset-pd-left">
-                        <label class="control-label">Bạn có chắc chắn không?</label>
+                        <label class="control-label">Are you sure you want to sign out?</label>
                     </div>
 
                     <div class="confirm-section">
                         <button onclick="window.location.href='?page=logout'" type="button"
-                                class="btn btn-success btn-action btn-yes pointer-on-hover">Có
+                                class="btn btn-success btn-action btn-yes pointer-on-hover">Yes
                         </button>
                     </div>
 
                     <div class="confirm-section">
-                        <button type="button" class="btn btn-danger btn-no btn-action pointer-on-hover">Không</button>
+                        <button type="button" class="btn btn-danger btn-no btn-action pointer-on-hover">No</button>
                     </div>
                 </div>
             </div>

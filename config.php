@@ -26,7 +26,7 @@ class Config
         }
 
         if (!defined('DRIVER_DIR')) {
-            $driverDir = str_replace('\\', '/', __DIR__ . '/core/DRIVER' . DIRECTORY_SEPARATOR);
+            $driverDir = str_replace('\\', '/', __DIR__ . '/core/Driver' . DIRECTORY_SEPARATOR);
             define('DRIVER_DIR', $driverDir);
         }
 

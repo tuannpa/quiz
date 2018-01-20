@@ -4,6 +4,9 @@ require_once CONTROLLER_DIR . 'Base/BaseController.php';
 require_once LIB_DIR . 'JWT/JWT.php';
 require_once APPLICATION_PATH . 'config.php';
 
+/**
+ * Class AuthController
+ */
 class AuthController extends BaseController
 {
     /**
@@ -19,10 +22,10 @@ class AuthController extends BaseController
     private static $_algorithm = 'HS256';
 
     /**
-     * Expired time for the token.
+     * Expired time (in seconds) for the token.
      * @var int
      */
-    private static $_expireTime = 600;
+    private static $_expireTime = 1200;
 
     /**
      * Verify login credential, return token if username and password are correct.
@@ -65,16 +68,17 @@ class AuthController extends BaseController
     }
 
     /**
-     * Check the token sent from user.
-     * @return bool
+     * Check the token sent from users, return the decrypted token if token is successfully decrypted.
+     * @return string | bool
      */
     public static function verifyToken()
     {
         if (isset($_COOKIE['token'])) {
             try {
                 $token = \Firebase\JWT\JWT::decode($_COOKIE['token'], Config::SECRET_KEY, [self::$_algorithm]);
-                return $token->userInfo;
+                return $token;
             } catch (\Firebase\JWT\SignatureInvalidException $e) {
+                // Deny access in case the Secret key is somehow modified
                 if ($e->getMessage() === 'Signature verification failed') {
                     return false;
                 }
@@ -99,7 +103,10 @@ class AuthController extends BaseController
         return false;
     }
 
-
+    /**
+     * Sign out method, clear the cookie and payload.
+     * @return bool
+     */
     public function logout()
     {
         $this->_payload = [];

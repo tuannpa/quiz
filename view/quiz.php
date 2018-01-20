@@ -1,25 +1,25 @@
 <?php
-if (!is_bool($userInfo = AuthController::verifyToken())):
+if (!is_bool($decryptedToken = AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'QuizController.php';
 
     if (!isset($_SESSION['endOfTest'])):
         $quizController = new QuizController($baseInstance->queryHelper);
         $questions = $quizController->generateRandomQuestions();
         $currentQuestion = $quizController->getCurrentQuestion();
-        $currentQuestion->id = $quizController->toInteger($currentQuestion->id);
+        $currentQuestion->id = (int)$currentQuestion->id;
         ?>
         <div class="preview" data-ng-controller="quizController">
 
             <h4 class="text-center quiz-heading">
-                Phần Thi Trắc Nghiệm
+                Quiz Section
             </h4>
 
             <div class="questionsBox"
                  data-ng-init="currentQuestionId = <?= $currentQuestion->id ?>; numOfQuestions = <?= $quizController->getTotalQuestions() ?>; selectedAnswer = <?= QuizController::getQuestionChoice() ?>"
-                 cg-busy="{promise:loadQuestionPromise,message:'Đang tải..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
+                 cg-busy="{promise:loadQuestionPromise,message:'Loading..',backdrop:true,minDuration:1000,wrapperClass:'question-loading'}">
 
                 <div class="ajaxReplace">
-                    <div class="questions">Câu <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
+                    <div class="questions">Question <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
                         . <?= $currentQuestion->content ?>
                     </div>
                     <ul class="answerList">
@@ -65,22 +65,22 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
                     <button
                             class="button pointer-on-hover"
                             data-ng-if="showBtnBackToHome"
-                            data-ng-click="backToHome()">Quay về trang chủ
+                            data-ng-click="backToHome()">Back to Homepage
                     </button>
                     <button
                             class="button pointer-on-hover"
                             data-ng-if="showBtnPrev"
-                            data-ng-click="loadQuestion('prev')">Quay lại
+                            data-ng-click="loadQuestion('prev')">Prev
                     </button>
                     <button
                             class="button pointer-on-hover"
                             data-ng-if="showBtnNext"
-                            data-ng-click="loadQuestion('next')">Tiếp tục
+                            data-ng-click="loadQuestion('next')">Next
                     </button>
 
                     <span class="questionTracking">
                         <?= isset($_SESSION['position']) ? $_SESSION['position'] : 1 ?>
-                        trong <?= $quizController->getTotalQuestions(); ?>
+                        / <?= $quizController->getTotalQuestions(); ?>
                     </span>
                 </div>
 
@@ -88,7 +88,7 @@ if (!is_bool($userInfo = AuthController::verifyToken())):
 
             <div class="row timing-section"
                  data-ng-if="showTiming">
-                <h5 class="timing-content">Thời gian làm bài: {{timing | hhMmSs}}</h5>
+                <h5 class="timing-content">Timing Clock: {{timing | hhMmSs}}</h5>
             </div>
 
         </div>
