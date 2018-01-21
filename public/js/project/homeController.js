@@ -23,28 +23,26 @@ homeController.$inject = [
     '$http',
     'md5',
     'toaster',
-    '$timeout'
+    '$timeout',
+    '$window'
 ];
 
-function homeController($scope, $http, md5, toaster, $timeout) {
-    $scope.password = '';
-    $scope.passwordAgain = '';
+function homeController($scope, $http, md5, toaster, $timeout, $window) {
     $scope.changePassword = function(form){
         if (form.$valid) {
             $scope.updatePasswordPromise = $http({
                 method: 'POST',
                 url: 'ajax/home/changePassword.php',
                 data: {
-                    password: md5.createHash($scope.password || ''),
-                    passwordAgain: md5.createHash($scope.passwordAgain || '')
+                    password: md5.createHash($scope.password)
                 }
             }).then(function(response){
                 var data = response.data;
                 $timeout(function () {
                     toaster.pop({
                         type: data.status ? 'success' : 'error',
-                        title: data.status ? 'Thành công!' : 'Thất Bại!',
-                        body: data.status ? 'Cập nhật thành công!' : 'Có lỗi xảy ra!',
+                        title: data.status ? 'Success!' : 'Error!',
+                        body: data.status ? 'Password has been updated!' : 'Unknown error!',
                         timeout: 2500
                     });
                     $scope.password = '';

@@ -9,12 +9,12 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
     $params = HomeController::getRequestPayload();
     $userInfo = $decryptedToken->userInfo;
     $state = $controller->queryHelper->update('users',['password'])
-        ->where('id = ?')
-        ->setQuery()
-        ->execQuery('crud', 'si', [
-            $params->password,
-            $userInfo->id
-        ]);
+                                     ->where('id = ?')
+                                     ->setQuery()
+                                     ->execQuery('crud', 'si', [
+                                         $params->password,
+                                         $userInfo->id
+                                     ]);
     $controller->jsonResponse(['status' => $state]);
 } else {
     $controller->jsonResponse(['status' => false]);

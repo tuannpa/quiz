@@ -102,7 +102,7 @@ function quizController($scope,
                 }, 1200);
             });
         } else {
-            alert('Bạn chưa chọn câu trả lời!');
+            alert('Please first select an answer!');
         }
     }
 }
