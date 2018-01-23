@@ -26,7 +26,6 @@ quizController.$inject = [
     '$timeout',
     '$interval',
     '$window',
-    'isNullOrUndefined',
     'localStorageService'
 ];
 
@@ -35,38 +34,31 @@ function quizController($scope,
                         $timeout,
                         $interval,
                         $window,
-                        isNullOrUndefined,
                         localStorageService) {
-    var increaseTiming = function () {
-        $interval(function () {
-            ++$scope.timing;
-            localStorageService.set('timingAfterReload', $scope.timing);
-        }, 1000);
-    };
-
-    var questions = localStorageService.get('numOfQuestions');
-    var timingAfterReload = localStorageService.get('timingAfterReload');
-
-    $scope.$watch('selectedAnswer', function () {
-        if ($scope.selectedAnswer) {
-            angular.element('.answerList').find(':radio[name=answerGroup][value="' + $scope.selectedAnswer + '"]').prop('checked', true);
-        }
-    });
-
-    if (performance.navigation.type == 1) {
-        $scope.timing = (questions >= 1) ? timingAfterReload : 0;
-        increaseTiming();
-    } else {
-        $scope.timing = (timingAfterReload > 0 && questions >= 1) ? timingAfterReload : 0;
-        increaseTiming();
-    }
+    var questions = localStorageService.get('numOfQuestions'),
+        timingAfterReload = localStorageService.get('timingAfterReload'),
+        promise,
+        increaseTiming = function () {
+            promise = $interval(function () {
+                ++$scope.timing;
+                localStorageService.set('timingAfterReload', $scope.timing);
+            }, 1000);
+        },
+        stopTiming = function () {
+            $interval.cancel(promise);
+        };
 
     $scope.showBtnPrev = (questions >= 1);
     $scope.showBtnBackToHome = false;
     $scope.showBtnNext = true;
     $scope.showTiming = true;
-    //$interval.cancel(promise);
-
+    $scope.timing = (timingAfterReload > 0 || questions >= 1) ? timingAfterReload : 0;
+    increaseTiming();
+    $scope.$watch('selectedAnswer', function () {
+        if ($scope.selectedAnswer) {
+            angular.element('.answerList').find(':radio[name=answerGroup][value="' + $scope.selectedAnswer + '"]').prop('checked', true);
+        }
+    });
     $scope.backToHome = function () {
         $window.location.href = '?page=home';
     };
@@ -84,13 +76,14 @@ function quizController($scope,
                 }
             }).then(function (response) {
                 var data = response.data;
-                $scope.currentQuestionId = (!isNullOrUndefined(data.nextQuestionId)) ? data.nextQuestionId : data.prevQuestionId;
+                $scope.currentQuestionId = (!angular.isNullOrUndefined(data.nextQuestionId)) ? data.nextQuestionId : data.prevQuestionId;
                 $timeout(function () {
-                    if (!isNullOrUndefined(data.showBtnBackToHome)) {
+                    if (!angular.isNullOrUndefined(data.showBtnBackToHome)) {
                         $scope.showBtnBackToHome = data.showBtnBackToHome;
                         $scope.showBtnPrev = data.showBtnPrev;
                         $scope.showBtnNext = false;
                         $scope.showTiming = false;
+                        stopTiming();
                         localStorageService.remove('numOfQuestions', 'timingAfterReload');
                     } else {
                         $scope.showBtnPrev = data.showBtnPrev;
@@ -100,6 +93,8 @@ function quizController($scope,
                     angular.element('.answerList').find(':radio[name=answerGroup][value="' + data.selectedChoice + '"]').prop('checked', true);
                     angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
                 }, 1200);
+            }).catch(function (error) {
+                console.error(error);
             });
         } else {
             alert('Please first select an answer!');

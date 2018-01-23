@@ -27,7 +27,7 @@ homeController.$inject = [
     '$window'
 ];
 
-function homeController($scope, $http, md5, toaster, $timeout, $window) {
+function homeController($scope, $http, md5, toaster, $timeout) {
     $scope.changePassword = function(form){
         if (form.$valid) {
             $scope.updatePasswordPromise = $http({
@@ -49,6 +49,8 @@ function homeController($scope, $http, md5, toaster, $timeout, $window) {
                     $scope.passwordAgain = '';
                     form.$setPristine();
                 }, 1200);
+            }).catch(function (error) {
+                console.error(error);
             });
         } else {
             angular.element('[data-toggle="popover"]').popover();

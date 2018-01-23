@@ -119,7 +119,5 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
         'questions' => isset($_SESSION['answer']) ? count($_SESSION['answer']) : null
     ]);
 } else {
-    $controller->jsonResponse([
-        'status' => false
-    ]);
+    throw new RuntimeException(Config::ACCESS_DENIED);
 }

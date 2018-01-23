@@ -17,5 +17,5 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
                                      ]);
     $controller->jsonResponse(['status' => $state]);
 } else {
-    $controller->jsonResponse(['status' => false]);
+    throw new RuntimeException(Config::ACCESS_DENIED);
 }

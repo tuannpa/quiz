@@ -12,9 +12,3 @@ var myApp = angular.module('myApp',[
             .setPrefix('myApp')
             .setStorageType('sessionStorage')
     }]);
-
-myApp.factory('isNullOrUndefined', function() {
-    return function(val) {
-        return angular.isUndefined(val) || val === null;
-    }
-});

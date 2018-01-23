@@ -3,10 +3,28 @@
  * @author: Tuan Nguyen
  */
 
+/**
+ * Class Config
+ * Configuration file, this is where you can change your database credentials,
+ * secret key.
+ */
 class Config
 {
+    /**
+     * Secret key used to encrypt and decrypt token for authentication.
+     * Do not expose the value of this key to anyone.
+     */
     const SECRET_KEY = 'a52bef76pu8t6';
 
+    /**
+     * Declare this text for multiple usages.
+     */
+    const ACCESS_DENIED = 'Access Denied!';
+
+    /**
+     * Provide your database credential here.
+     * @var array
+     */
     private static $config = [
         'host' => 'localhost',
         'dbName' => 'db_quiz',
@@ -14,10 +32,17 @@ class Config
         'password' => ''
     ];
 
+    /**
+     * Return database configuration.
+     * @return array
+     */
     public static function getConfig() {
         return self::$config;
     }
 
+    /**
+     * Define all necessary directories for the application.
+     */
     public static function loadDirectories()
     {
         if (!defined('CONTROLLER_DIR')) {

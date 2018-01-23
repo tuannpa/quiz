@@ -55,6 +55,7 @@ if (!defined('APPLICATION_PATH')) {
     <script src="public/js/angular-local-storage/angular-local-storage.min.js"></script>
     <script src="public/js/angular-ngDialog/ngDialog.min.js"></script>
     <script src="public/js/project/appModule.js"></script>
+    <script src="public/js/project/helper/utils.js"></script>
     <script src="public/js/project/homeController.js"></script>
     <script src="public/js/project/quizController.js"></script>
     <script src="public/js/project/registerController.js"></script>
