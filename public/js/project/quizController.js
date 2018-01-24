@@ -94,7 +94,7 @@ function quizController($scope,
                     angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
                 }, 1200);
             }).catch(function (error) {
-                console.error(error);
+                console.error(error.status + ': ' + error.statusText);
             });
         } else {
             alert('Please first select an answer!');

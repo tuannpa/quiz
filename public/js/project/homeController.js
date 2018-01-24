@@ -50,7 +50,17 @@ function homeController($scope, $http, md5, toaster, $timeout) {
                     form.$setPristine();
                 }, 1200);
             }).catch(function (error) {
-                console.error(error);
+                $timeout(function () {
+                    toaster.pop({
+                        type: 'error',
+                        title: error.status + 'error',
+                        body: error.statusText,
+                        timeout: 2500
+                    });
+                    $scope.password = '';
+                    $scope.passwordAgain = '';
+                    form.$setPristine();
+                }, 1200);
             });
         } else {
             angular.element('[data-toggle="popover"]').popover();

@@ -7,11 +7,13 @@ registerController.$inject = [
 
 function registerController($scope, 
                             ngDialog) {
+    $scope.test = 'asdasdsa';
     $scope.openRegisterForm = function () {
         ngDialog.open({
             template: 'registerForm',
             className: 'ngdialog-theme-default',
-            width: '600px'
+            width: '450px',
+            controller: 'registerController'
         });
     }
 }

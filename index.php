@@ -61,36 +61,48 @@ if (!defined('APPLICATION_PATH')) {
     <script src="public/js/project/registerController.js"></script>
     <script type="text/ng-template" id="registerForm">
         <div class="modal-header text-center register-heading">
-            <h5 class="modal-title">Đăng Ký Tài Khoản</h5>
+            <h5 class="modal-title">Sign up</h5>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label for="name">Họ và Tên</label>
-                <input type="text" class="form-control user-field" id="name">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name">
             </div>
 
             <div class="form-group">
-                <label for="name">Ngày sinh</label>
-                <input type="text" class="form-control user-field" id="name">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username">
             </div>
 
             <div class="form-group">
-                <label for="name">Giới tính</label>
-                <input type="text" class="form-control user-field" id="name">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password">
             </div>
 
             <div class="form-group">
-                <label for="name">Tên tài khoản</label>
-                <input type="text" class="form-control user-field" id="name">
+                <label for="dob">Date of birth</label>
+                <input type="text" class="form-control" id="dob">
             </div>
 
-            <div class="form-group">
-                <label for="name">Mật Khẩu</label>
-                <input type="text" class="form-control user-field" id="name">
+            <div>
+                <label>Gender</label>
             </div>
+
+            <label class="custom-control custom-radio">
+                <input name="cat" type="radio" class="custom-control-input" value="1">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Male</span>
+            </label>
+            <label class="custom-control custom-radio">
+                <input id="mixed0" name="cat" type="radio" class="custom-control-input" value="0">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Female</span>
+            </label>
         </div>
         <div class="ngdialog-buttons">
-            <button type="button" class="ngdialog-button ngdialog-button-primary" data-ng-click="">Open next</button>
+            <button type="button"
+                    class="ngdialog-button ngdialog-button-primary"
+                    data-ng-click="">Register</button>
         </div>
     </script>
     <script type="text/javascript">

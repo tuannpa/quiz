@@ -7,8 +7,9 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())):
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
     endif;
-    $birthday = (!empty($userInfo->date_of_birth)) ? date('d/m/Y', strtotime($userInfo->date_of_birth)) : 'Không có dữ liệu..';
-    $gender = ($userInfo->gender == 1) ? 'Nam' : 'Nữ';
+    $birthday = (!empty($userInfo->date_of_birth)) ?
+        date('d/m/Y', strtotime($userInfo->date_of_birth)) : 'No data available..';
+    $gender = ($userInfo->gender == 1) ? 'Male' : 'Female';
     ?>
     <div class="home" data-ng-controller="homeController">
         <h4>Hi, <?= $userInfo->name ?>!</h4>
@@ -23,22 +24,34 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())):
               novalidate>
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control user-field" value="<?= $userInfo->name ?>" id="name" disabled>
+                <input type="text"
+                       class="form-control user-field"
+                       value="<?= $userInfo->name ?>"
+                       id="name"
+                       disabled>
             </div>
 
             <div class="form-group">
                 <label for="birthday">Date of birth</label>
-                <input class="form-control user-field" value="<?= $birthday ?>" id="birthday" disabled="">
+                <input class="form-control user-field"
+                       value="<?= $birthday ?>"
+                       id="birthday"
+                       disabled="">
             </div>
 
             <div class="form-group">
                 <label for="gender">Gender</label>
-                <input class="form-control user-field" value="<?= $gender ?>" id="gender" disabled="">
+                <input class="form-control user-field"
+                       value="<?= $gender ?>"
+                       id="gender"
+                       disabled="">
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input class="form-control user-field" value="<?= $userInfo->username ?>" id="username"
+                <input class="form-control user-field"
+                       value="<?= $userInfo->username ?>"
+                       id="username"
                        disabled="">
             </div>
 

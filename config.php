@@ -17,9 +17,9 @@ class Config
     const SECRET_KEY = 'a52bef76pu8t6';
 
     /**
-     * Declare this text for multiple usages.
+     * Declare status code for multiple usages.
      */
-    const ACCESS_DENIED = 'Access Denied!';
+    const STATUS_CODE = 401;
 
     /**
      * Provide your database credential here.
