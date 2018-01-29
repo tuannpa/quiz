@@ -8,14 +8,7 @@ $controller = new HomeController(new QueryHelper());
 if (!is_bool($decryptedToken = AuthController::verifyToken())) {
     $params = HomeController::getRequestPayload();
     $userInfo = $decryptedToken->userInfo;
-    $state = $controller->queryHelper->update('users',['password'])
-                                     ->where('id = ?')
-                                     ->setQuery()
-                                     ->execQuery('crud', 'si', [
-                                         $params->password,
-                                         $userInfo->id
-                                     ]);
-    $controller->jsonResponse(['status' => $state]);
+    $controller->updatePassword($userInfo->id, $params->password);
 } else {
     http_response_code(Config::STATUS_CODE);
 }

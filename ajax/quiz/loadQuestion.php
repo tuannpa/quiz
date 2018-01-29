@@ -50,7 +50,7 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
 
     if (!isset($_SESSION['endOfTest'])) {
         $id = isset($nextQuestionId) ? $nextQuestionId : $prevQuestionId;
-        $question = $controller->queryHelper->findById('questions', $id);
+        $question = $controller->loadQuestion($id);
 
         $questionTemplate = TemplateHelper::setFilePath('template/questionTemplate.html')
             ->renderTemplate([
@@ -69,7 +69,7 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
             ]);
     } else {
         // TODO: Refactor, check if id is changeable to make this more dynamically
-        $allQuestions = $controller->queryHelper->findById('questions', 1, 'category_id');
+        $allQuestions = $controller->loadQuestionByCateId();
         $correctAnswer = 0;
         $incorrectAnswer = 0;
         foreach ($allQuestions as $question) {
@@ -83,13 +83,7 @@ if (!is_bool($decryptedToken = AuthController::verifyToken())) {
         }
         $score = $correctAnswer * 0.5;
 
-        $controller->queryHelper->insert('quiz_result', [
-            'user_id',
-            'correct_answer',
-            'incorrect_answer',
-            'score',
-            'finish_time'
-        ])->execQuery('crud', 'iiidi', [
+        $controller->saveQuizResult([
             $userInfo->id,
             $correctAnswer,
             $incorrectAnswer,

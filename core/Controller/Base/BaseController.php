@@ -3,7 +3,7 @@
  * @author: Tuan Nguyen
  */
 
-require_once DRIVER_DIR . '/QueryHelper.php';
+require_once DRIVER_DIR . 'QueryHelper.php';
 
 /**
  * Class BaseController

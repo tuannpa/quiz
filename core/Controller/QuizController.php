@@ -77,4 +77,39 @@ class QuizController extends BaseController
 
         return null;
     }
+
+    /**
+     * Save user's quiz result to database.
+     * @param array $data
+     */
+    public function saveQuizResult($data)
+    {
+        $this->queryHelper->insert('quiz_result', [
+            'user_id',
+            'correct_answer',
+            'incorrect_answer',
+            'score',
+            'finish_time'
+        ])->execQuery('crud', 'iiidi', $data);
+    }
+
+    /**
+     * Load a list of questions based on given category id.
+     * @param int $categoryId
+     * @return mixed
+     */
+    public function loadQuestionByCateId($categoryId = 1)
+    {
+        return $this->queryHelper->findById('questions', $categoryId, 'category_id');
+    }
+
+    /**
+     * Load a question based on given id.
+     * @param $questionId
+     * @return mixed
+     */
+    public function loadQuestion($questionId)
+    {
+        return $this->queryHelper->findById('questions', $questionId);
+    }
 }

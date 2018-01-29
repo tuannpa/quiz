@@ -34,6 +34,11 @@ abstract class Database
     private $_limit = [];
 
     /**
+     * @var array $_join
+     */
+    private $_join = [];
+
+    /**
      * Database constructor, contains database credentials.
      * @param $host
      * @param $username
@@ -94,6 +99,7 @@ abstract class Database
             }
         }
         $results->free();
+
         return $arr;
     }
 
@@ -112,16 +118,16 @@ abstract class Database
      * Insert method, returns $this to allow chaining.
      * @param $table
      * @param array $columns
-     * @param string $glue
+     * @param string $param
      * @return $this
      */
-    public function insert($table, $columns = [], $glue = '?')
+    public function insert($table, $columns = [], $param = '?')
     {
         $columnList = null;
         $params = null;
         foreach ($columns as $column) {
             $columnList .= ',' . $column;
-            $params .= ', ' . $glue;
+            $params .= ', ' . $param;
         }
         $this->_sql = 'INSERT INTO ' . $table . '(' . ltrim($columnList, ',') . ') VALUES (' . ltrim($params, ',') . ')';
 
@@ -132,14 +138,14 @@ abstract class Database
      * Update method, returns $this to allow chaining.
      * @param $table
      * @param array $columns
-     * @param string $glue
+     * @param string $param
      * @return $this
      */
-    public function update($table, $columns = [], $glue = '?')
+    public function update($table, $columns = [], $param = '?')
     {
         $columnList = null;
         foreach ($columns as $column) {
-            $columnList .= $column . ' = ' . $glue . ', ';
+            $columnList .= $column . ' = ' . $param . ', ';
         }
         $this->_sql = 'UPDATE ' . $table . ' SET ' . rtrim($columnList, ', ');
 
@@ -163,15 +169,7 @@ abstract class Database
      */
     public function select($columns)
     {
-        $colName = null;
-        if (!empty(func_get_args())) {
-            foreach (func_get_args() as $column) {
-                $colName .= ',' . $column;
-            }
-        }
-        $colName = (!is_null($colName)) ? ltrim($colName, ',') : '*';
-        $this->_sql = 'SELECT ' . $colName;
-
+        $this->_sql = 'SELECT ' . $this->getArgs(func_get_args());
         return $this;
     }
 
@@ -182,15 +180,7 @@ abstract class Database
      */
     public function from($tables)
     {
-        if (func_num_args() > 1) {
-            $tbl = null;
-            foreach (func_get_args() as $table) {
-                $tbl .= ',' . $table;
-            }
-        }
-        $tableName = (!is_null($tbl)) ? ltrim($tbl, ',') : $tables;
-        $this->_sql .= ' FROM ' . $tableName;
-
+        $this->_sql .= ' FROM ' . $this->getArgs(func_get_args());
         return $this;
     }
 
@@ -253,6 +243,14 @@ abstract class Database
         return $this;
     }
 
+    public function join($table, $type)
+    {
+        switch (strtoupper($type)) {
+            case 'INNER':
+
+        }
+    }
+
     /**
      * Append where conditions.
      * @param $element
@@ -264,6 +262,22 @@ abstract class Database
         } else {
             $this->_where = array_merge($this->_where, $element);
         }
+    }
+
+    /**
+     * @param array $args
+     * @param null $argBag
+     * @return string
+     */
+    public function getArgs($args, $argBag = null)
+    {
+        if (count($args) > 1) {
+            foreach ($args as $arg) {
+                $argBag .= ',' . $arg;
+            }
+        }
+
+        return (!is_null($argBag)) ? ltrim($argBag, ',') : current($args);
     }
 
     /**
@@ -318,10 +332,8 @@ abstract class Database
         switch ($command) {
             case 'crud':
                 return $exec;
-                break;
             case 'getResult':
                 return $stmt->get_result();
-                break;
             case 'numRows':
                 $stmt->store_result();
                 return $stmt->num_rows;
@@ -356,7 +368,3 @@ abstract class Database
         }
     }
 }
-
-
-
-
