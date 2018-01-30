@@ -36,10 +36,10 @@ class AuthController extends BaseController
     public function loginAuth($username, $password)
     {
         $query = $this->queryHelper->select('*')
-                                   ->from('users')
-                                   ->where('username = ?')
-                                   ->where('password = ?')
-                                   ->setQuery();
+            ->from('users')
+            ->where('username = ?')
+            ->where('password = ?')
+            ->setQuery();
         $match = $query->execQuery('numRows', 'ss', [
             $username,
             $password
@@ -96,7 +96,7 @@ class AuthController extends BaseController
      */
     public static function setAuthToken($token)
     {
-        if (!is_null($token)){
+        if (!is_null($token)) {
             return setcookie('token', $token, time() + self::$_expireTime, '/');
         }
 

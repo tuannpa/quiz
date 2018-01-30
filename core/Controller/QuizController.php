@@ -20,6 +20,7 @@ class QuizController extends BaseController
     }
 
     // TODO: Remove default value of $categoryId later
+
     /**
      * Generate random questions base on given category id.
      * @param int $categoryId
@@ -28,11 +29,11 @@ class QuizController extends BaseController
     public function generateRandomQuestions($categoryId = 1)
     {
         $query = $this->queryHelper->select('id')
-                                   ->from('questions')
-                                   ->where('category_id = ?')
-                                   ->orderBy('RAND()')
-                                   ->setQuery()
-                                   ->execQuery('getResult', 'i', [$categoryId]);
+            ->from('questions')
+            ->where('category_id = ?')
+            ->orderBy('RAND()')
+            ->setQuery()
+            ->execQuery('getResult', 'i', [$categoryId]);
 
         $randomQuestions = $this->queryHelper->fetchData($query);
         if (!isset($_SESSION['firstInit'])) {

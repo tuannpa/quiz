@@ -39,6 +39,11 @@ abstract class Database
     private $_join = [];
 
     /**
+     * @var array $_join
+     */
+    private $_on = [];
+
+    /**
      * Database constructor, contains database credentials.
      * @param $host
      * @param $username
@@ -243,12 +248,41 @@ abstract class Database
         return $this;
     }
 
+    /**
+     * Join method, return $this to allow chaining.
+     * @param $table
+     * @param $type
+     * @return $this
+     */
     public function join($table, $type)
     {
         switch (strtoupper($type)) {
-            case 'INNER':
-
+            case 'LEFT':
+                $this->_join[] = ' LEFT JOIN ' . $table;
+                break;
+            case 'RIGHT':
+                $this->_join[] = ' RIGHT JOIN ' . $table;
+                break;
+            case 'FULL OUTER':
+                $this->_join[] = ' FULL OUTER JOIN ' . $table;
+                break;
+            default:
+                $this->_join[] = ' INNER JOIN ' . $table;
+                break;
         }
+
+        return $this;
+    }
+
+    /**
+     * Join condition.
+     * @param $condition
+     * @return $this
+     */
+    public function on($condition)
+    {
+        $this->_on[] = ' ON ' . $condition;
+        return $this;
     }
 
     /**
@@ -286,6 +320,12 @@ abstract class Database
      */
     public function setQuery()
     {
+        if (!empty($this->_join) && !empty($this->_on)) {
+            foreach ($this->_join as $k => $v) {
+                $this->_sql .= $v . $this->_on[$k];
+            }
+        }
+
         if (!empty($this->_where)) {
             $this->_sql .= implode(' ', $this->_where);
             $this->_where = [];

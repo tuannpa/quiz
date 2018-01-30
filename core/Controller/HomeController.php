@@ -15,7 +15,7 @@ class HomeController extends BaseController
      */
     public function updatePassword($userId, $password)
     {
-        $state = $this->queryHelper->update('users',['password'])
+        $state = $this->queryHelper->update('users', ['password'])
             ->where('id = ?')
             ->setQuery()
             ->execQuery('crud', 'si', [
