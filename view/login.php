@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST['btnLogin'])):
     $token = $authController->loginAuth($_POST['username'], md5($_POST['password']));
-    if (!AuthController::setAuthToken($token)):
+    if (!AuthController::setAccessToken($token)):
         $message = 'Incorrect username or password!';
     else:
         header('Location: index.php');

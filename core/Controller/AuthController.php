@@ -67,16 +67,27 @@ class AuthController extends BaseController
         return null;
     }
 
+    public static function getUserInfo($token)
+    {
+        $payload = \Firebase\JWT\JWT::decode($token, Config::SECRET_KEY, [self::$_algorithm]);
+        if (!empty($payload)) {
+            return $payload->userInfo;
+        }
+
+        return null;
+    }
+
     /**
-     * Check the token sent from users, return the decrypted token if token is successfully decrypted.
+     * Check the token sent from client, return the token back to client, throw error
+     * if token can not be decrypted.
      * @return string | bool
      */
     public static function verifyToken()
     {
         if (isset($_COOKIE['token'])) {
             try {
-                $token = \Firebase\JWT\JWT::decode($_COOKIE['token'], Config::SECRET_KEY, [self::$_algorithm]);
-                return $token;
+                \Firebase\JWT\JWT::decode($_COOKIE['token'], Config::SECRET_KEY, [self::$_algorithm]);
+                return $_COOKIE['token'];
             } catch (\Firebase\JWT\SignatureInvalidException $e) {
                 // Deny access in case the Secret key is somehow modified
                 if ($e->getMessage() === 'Signature verification failed') {
@@ -94,7 +105,7 @@ class AuthController extends BaseController
      * @param $token
      * @return bool
      */
-    public static function setAuthToken($token)
+    public static function setAccessToken($token)
     {
         if (!is_null($token)) {
             return setcookie('token', $token, time() + self::$_expireTime, '/');

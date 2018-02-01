@@ -1,5 +1,5 @@
 <?php
-if (!is_bool($decryptedToken = AuthController::verifyToken())):
+if (!is_bool(AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'QuizController.php';
 
     if (!isset($_SESSION['endOfTest'])):

@@ -7,10 +7,10 @@ require_once CONTROLLER_DIR . 'AuthController.php';
 
 $controller = new QuizController(new QueryHelper());
 
-if (!is_bool($decryptedToken = AuthController::verifyToken())) {
+if (!is_bool($token = AuthController::verifyToken())) {
     $params = BaseController::getRequestPayload();
     $request = $controller->getUrlParams();
-    $userInfo = $decryptedToken->userInfo;
+    $userInfo = AuthController::getUserInfo($token);
 
     if (!isset($_SESSION['answer'])) {
         $_SESSION['answer'] = [];

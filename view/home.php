@@ -1,9 +1,9 @@
 <?php
-if (!is_bool($decryptedToken = AuthController::verifyToken())):
+if (!is_bool($token = AuthController::verifyToken())):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
     $homeController = new HomeController($baseInstance->queryHelper);
-    $userInfo = $decryptedToken->userInfo;
+    $userInfo = AuthController::getUserInfo($token);
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
     endif;
