@@ -22,9 +22,9 @@ class QueryHelper extends Database
     }
 
     /**
-     * Return a single record that has column 'id' matches with given id. The default column is 'id'
+     * Return a single record that has column 'id' matches with given id. The default value is 'id'
      * which is the primary key of the table, you can pass other value like 'category_id' or 'user_id', ...
-     * Just make sure the actual value of the column name is type of integer.
+     * Just make sure the actual value of the column is type of integer.
      * @param string $table
      * @param integer $id
      * @param string $column
@@ -53,5 +53,23 @@ class QueryHelper extends Database
             ->execQuery('getResult');
 
         return $this->fetchData($query);
+    }
+
+    /**
+     * This method is created for the purpose to work with raw queries.
+     * ******************************
+     * For example:
+     *  $this->unprepared('SELECT * FROM {tableName}');
+     * ******************************
+     * @param $query
+     * @return array
+     */
+    public function unprepared($query)
+    {
+        if ($this->mNumRows($query) > 1) {
+            return $this->mFetchAssoc($query);
+        }
+
+        return $this->mFetchAssocOne($query);
     }
 }

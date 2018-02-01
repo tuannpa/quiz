@@ -44,6 +44,16 @@ abstract class Database
     private $_on = [];
 
     /**
+     * @var array $_groupBy
+     */
+    private $_groupBy = [];
+
+    /**
+     * @var array $_having
+     */
+    private $_having = [];
+
+    /**
      * Database constructor, contains database credentials.
      * @param $host
      * @param $username
@@ -198,11 +208,11 @@ abstract class Database
     public function where($conditions, $glue = 'AND')
     {
         if (empty($this->_where)) {
-            $this->append(' WHERE');
-            $this->append($conditions);
+            $this->append(' WHERE', '_where');
+            $this->append($conditions, '_where');
         } else {
-            $this->append($glue);
-            $this->append($conditions);
+            $this->append(strtoupper($glue), '_where');
+            $this->append($conditions, '_where');
         }
 
         return $this;
@@ -275,7 +285,7 @@ abstract class Database
     }
 
     /**
-     * Join condition.
+     * Join condition, return $this to allow chaining.
      * @param $condition
      * @return $this
      */
@@ -286,15 +296,54 @@ abstract class Database
     }
 
     /**
-     * Append where conditions.
-     * @param $element
+     * Group by method, return $this to allow chaining.
+     * @param $columns
+     * @return $this
      */
-    public function append($element)
+    public function groupBy($columns)
+    {
+        $this->_groupBy[] = ' GROUP BY ';
+
+        if (func_num_args() > 1) {
+            $this->_groupBy[] = $this->getArgs(func_get_args());
+        } else {
+            $this->_groupBy[] = $columns;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Having method, used to support usages of aggregate functions,
+     * return $this to allow chaining.
+     * @param $condition
+     * @param string $glue
+     * @return $this
+     */
+    public function having($condition, $glue = 'AND')
+    {
+        if (empty($this->_having)) {
+            $this->append(' HAVING', '_having');
+            $this->append($condition, '_having');
+        } else {
+            $this->append(strtoupper($glue), '_having');
+            $this->append($condition, '_having');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Append conditions, identified by property name.
+     * @param $element
+     * @param string $property
+     */
+    public function append($element, $property)
     {
         if (!is_array($element)) {
-            $this->_where = array_merge($this->_where, [$element]);
+            $this->{$property} = array_merge($this->{$property}, [$element]);
         } else {
-            $this->_where = array_merge($this->_where, $element);
+            $this->{$property} = array_merge($this->{$property}, $element);
         }
     }
 
@@ -315,7 +364,7 @@ abstract class Database
     }
 
     /**
-     * Builds complete query, returns current query.
+     * Build complete query.
      * @return $this
      */
     public function setQuery()
@@ -324,24 +373,51 @@ abstract class Database
             foreach ($this->_join as $k => $v) {
                 $this->_sql .= $v . $this->_on[$k];
             }
+            $this->_join = [];
+            $this->_on = [];
         }
 
         if (!empty($this->_where)) {
-            $this->_sql .= implode(' ', $this->_where);
+            $this->_sql .= $this->parseSQL($this->_where, ' ');
             $this->_where = [];
         }
 
+        if (!empty($this->_groupBy)) {
+            $this->_sql .= $this->parseSQL($this->_groupBy, ' ');
+            $this->_groupBy = [];
+        }
+
+        if (!empty($this->_having)) {
+            $this->_sql .= $this->parseSQL($this->_having, ' ');
+            $this->_having = [];
+        }
+
         if (!empty($this->_orderBy)) {
-            $this->_sql .= implode($this->_orderBy);
+            $this->_sql .= $this->parseSQL($this->_orderBy);
             $this->_orderBy = [];
         }
 
         if (!empty($this->_limit)) {
-            $this->_sql .= implode($this->_limit);
+            $this->_sql .= $this->parseSQL($this->_limit);
             $this->_limit = [];
         }
 
         return $this;
+    }
+
+    /**
+     * Transform array element to SQL parts.
+     * @param $element
+     * @param null $glue
+     * @return string
+     */
+    public function parseSQL($element, $glue = null)
+    {
+        if (!is_null($glue)) {
+            return implode($glue, $element);
+        }
+
+        return implode($element);
     }
 
     /**
