@@ -287,3 +287,7 @@ input[type=checkbox], input[type=radio] {
 .register-heading {
     display: block !important;
 }
+
+#datetimepicker-dropdown::after {
+    content: none !important;
+}

@@ -5,7 +5,8 @@ var myApp = angular.module('myApp',[
     'angular-md5',
     'ngSanitize',
     'LocalStorageModule',
-    'ngDialog'
+    'ngDialog',
+    'ui.bootstrap.datetimepicker'
 ]).config([
     'localStorageServiceProvider', function (localStorageServiceProvider) {
         localStorageServiceProvider

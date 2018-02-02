@@ -25,6 +25,7 @@ if (!defined('APPLICATION_PATH')) {
     <link rel="stylesheet" type="text/css" href="public/css/angular-toaster/toaster.min.css">
     <link rel="stylesheet" type="text/css" href="public/css/angular-ngDialog/ngDialog.min.css">
     <link rel="stylesheet" type="text/css" href="public/css/angular-ngDialog/ngDialog-theme-default.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/angular-datetimepicker/datetimepicker.css">
 </head>
 <body data-ng-app="myApp">
     <div class="container">
@@ -54,6 +55,10 @@ if (!defined('APPLICATION_PATH')) {
     <script src="public/js/angular-sanitize/angular-sanitize.js"></script>
     <script src="public/js/angular-local-storage/angular-local-storage.min.js"></script>
     <script src="public/js/angular-ngDialog/ngDialog.min.js"></script>
+    <script src="public/js/moment/moment.min.js"></script>
+    <script src="public/js/angular-datetimepicker/angular-datetimepicker.js"></script>
+    <script src="public/js/angular-datetimepicker/angular-datetimepicker-template.js"></script>
+    <script src="public/js/moment/moment.min.js"></script>
     <script src="public/js/project/appModule.js"></script>
     <script src="public/js/project/helper/utils.js"></script>
     <script src="public/js/project/homeController.js"></script>
@@ -80,8 +85,23 @@ if (!defined('APPLICATION_PATH')) {
             </div>
 
             <div class="form-group">
-                <label for="dob">Date of birth</label>
-                <input type="text" class="form-control" id="dob">
+                <label for="passwordConfirm">Password confirmation</label>
+                <input type="password" class="form-control" id="passwordConfirm">
+            </div>
+
+            <div class="form-group">
+                <div class="dropdown dropdown1-parent">
+                    <a class="dropdown-toggle" id="datetimepicker-dropdown" role="button" data-toggle="dropdown" data-target=".dropdown1-parent" href="#">
+                        <div class="input-group">
+                            <input type="text" id="date" name="date" class="form-control" data-ng-model="data.date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker data-ng-model="data.date"
+                                        data-datetimepicker-config="{ dropdownSelector: '.dropdown-toggle', minView: 'day' }"></datetimepicker>
+                    </ul>
+                </div>
             </div>
 
             <div>
@@ -89,17 +109,17 @@ if (!defined('APPLICATION_PATH')) {
             </div>
 
             <label class="custom-control custom-radio">
-                <input name="cat" type="radio" class="custom-control-input" value="1">
+                <input name="male" type="radio" class="custom-control-input" value="1">
                 <span class="custom-control-indicator"></span>
                 <span class="custom-control-description">Male</span>
             </label>
             <label class="custom-control custom-radio">
-                <input id="mixed0" name="cat" type="radio" class="custom-control-input" value="0">
+                <input id="mixed0" name="female" type="radio" class="custom-control-input" value="0">
                 <span class="custom-control-indicator"></span>
                 <span class="custom-control-description">Female</span>
             </label>
         </div>
-        <div class="ngdialog-buttons">
+        <div class="ngdialog-buttons d-flex justify-content-center">
             <button type="button"
                     class="ngdialog-button ngdialog-button-primary"
                     data-ng-click="">Register</button>
