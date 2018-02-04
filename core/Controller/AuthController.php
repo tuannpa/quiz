@@ -28,6 +28,44 @@ class AuthController extends BaseController
     private static $_expireTime = 1200;
 
     /**
+     * CSRF Token.
+     * @var string
+     */
+    private static $_CSRFToken = '';
+
+    /**
+     * Set the value of the CSRF Token.
+     * @param int @length
+     */
+    public static function setCSRFToken($length = 32)
+    {
+        self::$_CSRFToken = bin2hex(openssl_random_pseudo_bytes($length));
+    }
+
+    /**
+     * Get the CSRF Token.
+     * @return string
+     */
+    public static function getCSRFToken()
+    {
+        return self::$_CSRFToken;
+    }
+
+    /**
+     * Verify the CSRK Token sent from forms to prevent CSRF attempts.
+     * @param string $token
+     * @return bool
+     */
+    public static function verifyCSRFToken($token)
+    {
+        if (!empty($token) && hash_equals($_SESSION['CSRFToken'], $token)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Verify login credential, return token if username and password are correct.
      * @param $username
      * @param $password
@@ -80,14 +118,15 @@ class AuthController extends BaseController
     /**
      * Check the token sent from client, return the token back to client, throw error
      * if token can not be decrypted.
+     * @param string $token
      * @return string | bool
      */
-    public static function verifyToken()
+    public static function verifyToken($token)
     {
-        if (isset($_COOKIE['token'])) {
+        if (!empty($token)) {
             try {
-                \Firebase\JWT\JWT::decode($_COOKIE['token'], Config::SECRET_KEY, [self::$_algorithm]);
-                return $_COOKIE['token'];
+                \Firebase\JWT\JWT::decode($token, Config::SECRET_KEY, [self::$_algorithm]);
+                return $token;
             } catch (\Firebase\JWT\SignatureInvalidException $e) {
                 // Deny access in case the Secret key is somehow modified
                 if ($e->getMessage() === 'Signature verification failed') {

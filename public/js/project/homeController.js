@@ -1,22 +1,4 @@
 myApp.controller('homeController', homeController)
-    .directive('compareTo', [ function(){
-        return {
-            require: "ngModel",
-            scope: {
-                otherModelValue: "=compareTo"
-            },
-            link: function (scope, element, attributes, ngModel) {
-
-                ngModel.$validators.compareTo = function (modelValue) {
-                    return modelValue === scope.otherModelValue;
-                };
-
-                scope.$watch("otherModelValue", function () {
-                    ngModel.$validate();
-                });
-            }
-        };
-}]);
 
 homeController.$inject = [
     '$scope',
@@ -28,7 +10,7 @@ homeController.$inject = [
 ];
 
 function homeController($scope, $http, md5, toaster, $timeout) {
-    $scope.changePassword = function(form){
+    $scope.changePassword = function (form) {
         if (form.$valid) {
             $scope.updatePasswordPromise = $http({
                 method: 'POST',
@@ -36,7 +18,7 @@ function homeController($scope, $http, md5, toaster, $timeout) {
                 data: {
                     password: md5.createHash($scope.password)
                 }
-            }).then(function(response){
+            }).then(function (response) {
                 var data = response.data;
                 $timeout(function () {
                     toaster.pop({

@@ -3,12 +3,10 @@ session_start();
 require_once '../ajaxConfig.php';
 require_once CONTROLLER_DIR . 'QuizController.php';
 require_once HELPER_DIR . 'TemplateHelper.php';
-require_once CONTROLLER_DIR . 'AuthController.php';
 
-$controller = new QuizController(new QueryHelper());
-
-if (!is_bool($token = AuthController::verifyToken())) {
-    $params = BaseController::getRequestPayload();
+if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
+    $controller = new QuizController(new QueryHelper());
+    $params = QuizController::getRequestPayload();
     $request = $controller->getUrlParams();
     $userInfo = AuthController::getUserInfo($token);
 
@@ -113,5 +111,9 @@ if (!is_bool($token = AuthController::verifyToken())) {
         'questions' => isset($_SESSION['answer']) ? count($_SESSION['answer']) : null
     ]);
 } else {
-    http_response_code(Config::STATUS_CODE);
+    http_response_code(Config::UNAUTHORIZED_CODE);
+    QuizController::Json([
+        'statusCode' => Config::UNAUTHORIZED_CODE,
+        'message' => 'Unauthorized'
+    ]);
 }

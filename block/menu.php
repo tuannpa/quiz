@@ -23,7 +23,7 @@
                     </div>
                 </li>
 
-                <?php if (!is_bool(AuthController::verifyToken())): ?>
+                <?php if (!is_bool(AuthController::verifyToken($_COOKIE['token']))): ?>
                 <li class="nav-item active">
                     <a class="nav-link" href="?page=quiz">Quiz <span class="sr-only">(current)</span></a>
                 </li>

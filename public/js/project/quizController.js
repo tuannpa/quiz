@@ -1,24 +1,26 @@
 myApp.controller('quizController', quizController)
     .filter('hhMmSs', function () {
-    return function (time) {
-        var sec = parseInt(time, 10);
-        var hours = Math.floor(sec / 3600);
-        var minutes = Math.floor((sec - (hours * 3600)) / 60);
-        var seconds = sec - (hours * 3600) - (minutes * 60);
+        return function (time) {
+            var sec = parseInt(time, 10),
+                hours = Math.floor(sec / 3600),
+                minutes = Math.floor((sec - (hours * 3600)) / 60),
+                seconds = sec - (hours * 3600) - (minutes * 60);
 
-        if (hours < 10) {
-            hours = "0" + hours;
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+
+            return hours + ':' + minutes + ':' + seconds;
         }
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        if (seconds < 10) {
-            seconds = "0" + seconds;
-        }
-        var currentTime = hours + ':' + minutes + ':' + seconds;
-        return currentTime;
-    }
-});
+    });
 
 quizController.$inject = [
     '$scope',
@@ -48,6 +50,7 @@ function quizController($scope,
             $interval.cancel(promise);
         };
 
+    //TODO: handle toggle Prev button if user rolls back to first question and hit reload.
     $scope.showBtnPrev = (questions >= 1);
     $scope.showBtnBackToHome = false;
     $scope.showBtnNext = true;
@@ -64,41 +67,37 @@ function quizController($scope,
     };
 
     $scope.loadQuestion = function (task) {
-        if (angular.element('input[type=radio]').is(':checked')) {
-            $scope.loadQuestionPromise = $http({
-                method: 'POST',
-                url: 'ajax/quiz/loadQuestion.php?task=' + task,
-                data: {
-                    currentQuestionId: $scope.currentQuestionId,
-                    userChoice: angular.element('input[name=answerGroup]:checked').val(),
-                    totalQuestions: $scope.numOfQuestions,
-                    totalTime: $scope.timing
+        $scope.loadQuestionPromise = $http({
+            method: 'POST',
+            url: 'ajax/quiz/loadQuestion.php?task=' + task,
+            data: {
+                currentQuestionId: $scope.currentQuestionId,
+                userChoice: angular.element('input[name=answerGroup]:checked').val(),
+                totalQuestions: $scope.numOfQuestions,
+                totalTime: $scope.timing
+            }
+        }).then(function (response) {
+            var data = response.data;
+            $scope.currentQuestionId = (!angular.isNullOrUndefined(data.nextQuestionId)) ? data.nextQuestionId : data.prevQuestionId;
+            $timeout(function () {
+                if (!angular.isNullOrUndefined(data.showBtnBackToHome)) {
+                    $scope.showBtnBackToHome = data.showBtnBackToHome;
+                    $scope.showBtnPrev = data.showBtnPrev;
+                    $scope.showBtnNext = false;
+                    $scope.showTiming = false;
+                    stopTiming();
+                    localStorageService.remove('numOfQuestions', 'timingAfterReload');
+                } else {
+                    $scope.showBtnPrev = data.showBtnPrev;
+                    localStorageService.set('numOfQuestions', data.questions);
                 }
-            }).then(function (response) {
-                var data = response.data;
-                $scope.currentQuestionId = (!angular.isNullOrUndefined(data.nextQuestionId)) ? data.nextQuestionId : data.prevQuestionId;
-                $timeout(function () {
-                    if (!angular.isNullOrUndefined(data.showBtnBackToHome)) {
-                        $scope.showBtnBackToHome = data.showBtnBackToHome;
-                        $scope.showBtnPrev = data.showBtnPrev;
-                        $scope.showBtnNext = false;
-                        $scope.showTiming = false;
-                        stopTiming();
-                        localStorageService.remove('numOfQuestions', 'timingAfterReload');
-                    } else {
-                        $scope.showBtnPrev = data.showBtnPrev;
-                        localStorageService.set('numOfQuestions', data.questions);
-                    }
-                    angular.element('.ajaxReplace').replaceWith(data.questionContent);
-                    angular.element('.answerList').find(':radio[name=answerGroup][value="' + data.selectedChoice + '"]').prop('checked', true);
-                    angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
-                }, 1200);
-            }).catch(function (error) {
-                console.error(error.status + ': ' + error.statusText);
-            });
-        } else {
-            alert('Please first select an answer!');
-        }
+                angular.element('.ajaxReplace').replaceWith(data.questionContent);
+                angular.element('.answerList').find(':radio[name=answerGroup][value="' + data.selectedChoice + '"]').prop('checked', true);
+                angular.element('.questionTracking').replaceWith(data.questionTrackingContent);
+            }, 1200);
+        }).catch(function (error) {
+            console.error(error.status + ': ' + error.statusText);
+        });
     }
 }
 

@@ -61,7 +61,7 @@ class BaseController
     }
 
     /**
-     * $_GET wrapper, use this function if you prefer access data of object type.
+     * $_GET wrapper, use this function if you prefer accessing data of object type.
      * @return mixed
      */
     public function getUrlParams()
@@ -70,12 +70,21 @@ class BaseController
     }
 
     /**
-     * Json encode the given data.
+     * Rewrite Json method to use the method as non-static.
      * @param array $data
      * @return mixed
      */
     public function jsonResponse($data)
     {
+        return self::Json($data);
+    }
+
+    /**
+     * Json encode the given data.
+     * @param $data
+     * @return int
+     */
+    public static function Json($data) {
         return print json_encode($data);
     }
 

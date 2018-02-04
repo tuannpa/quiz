@@ -1,5 +1,5 @@
 <?php
-if (!is_bool($token = AuthController::verifyToken())):
+if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
     $homeController = new HomeController($baseInstance->queryHelper);
@@ -7,8 +7,8 @@ if (!is_bool($token = AuthController::verifyToken())):
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
     endif;
-    $birthday = (!empty($userInfo->date_of_birth)) ?
-        date('d/m/Y', strtotime($userInfo->date_of_birth)) : 'No data available..';
+    $birthday = (!empty($userInfo->dateOfBirth)) ?
+        date('d/m/Y', strtotime($userInfo->dateOfBirth)) : 'No data available..';
     $gender = ($userInfo->gender == 1) ? 'Male' : 'Female';
     ?>
     <div class="home" data-ng-controller="homeController">
@@ -20,7 +20,7 @@ if (!is_bool($token = AuthController::verifyToken())):
         <form name="userForm"
               class="userForm"
               data-ng-submit="changePassword(userForm)"
-              cg-busy="{promise:updatePasswordPromise,message:'Loading..',backdrop:true,minDuration:1000}"
+              cg-busy="{promise:registerPromise,message:'Loading..',backdrop:true,minDuration:1000}"
               novalidate>
             <div class="form-group">
                 <label for="name">Name</label>
@@ -67,20 +67,20 @@ if (!is_bool($token = AuthController::verifyToken())):
                            data-ng-minlength="6"
                            data-ng-maxlength="20"
                            data-ng-class="{'got-errors' : userForm.$submitted && userForm.password.$invalid}">
-                    <div data-ng-if="userForm.$submitted" class="on-same-line">
-                        <span data-ng-show="userForm.password.$error.minlength"
+                    <div data-ng-if="userForm.$submitted && userForm.password.$invalid" class="on-same-line">
+                        <span data-ng-if="userForm.password.$error.minlength"
                               data-toggle="popover"
                               data-trigger="hover"
                               data-content="Password length is a minimum of 6 characters"
                               class="fa fa-exclamation-triangle warning-icon pointer-on-hover"
                               aria-hidden="true"></span>
-                        <span data-ng-show="userForm.password.$error.maxlength"
+                        <span data-ng-if="userForm.password.$error.maxlength"
                               data-toggle="popover"
                               data-trigger="hover"
                               data-content="Password length is a maximum of 20 characters"
                               class="fa fa-exclamation-triangle warning-icon pointer-on-hover"
                               aria-hidden="true"></span>
-                        <span data-ng-show="userForm.password.$error.required"
+                        <span data-ng-if="userForm.password.$error.required"
                               data-toggle="popover"
                               data-trigger="hover"
                               data-content="Please enter new password"
@@ -97,9 +97,6 @@ if (!is_bool($token = AuthController::verifyToken())):
                        name="passwordAgain"
                        class="form-control user-field"
                        data-ng-model="passwordAgain"
-                       required
-                       data-ng-minlength="6"
-                       data-ng-maxlength="20"
                        data-ng-class="{'got-errors' : userForm.$submitted && userForm.password.$invalid}"
                        data-compare-to="password">
                 <div data-ng-if="userForm.$submitted"

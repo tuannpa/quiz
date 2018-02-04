@@ -291,3 +291,7 @@ input[type=checkbox], input[type=radio] {
 #datetimepicker-dropdown::after {
     content: none !important;
 }
+
+.validation-message {
+    margin-left: 0.3em;
+}

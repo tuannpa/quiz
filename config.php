@@ -19,7 +19,7 @@ class Config
     /**
      * Declare status code for multiple usages.
      */
-    const STATUS_CODE = 401;
+    const UNAUTHORIZED_CODE = 401;
 
     /**
      * Provide your database credential here.

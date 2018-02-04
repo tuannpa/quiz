@@ -8,6 +8,6 @@ require_once APPLICATION_PATH . 'config.php';
 Config::loadDirectories();
 
 require_once CONTROLLER_DIR . 'AuthController.php';
-if (is_bool(AuthController::verifyToken())) {
-    http_response_code(Config::STATUS_CODE);
+if (is_bool(AuthController::verifyToken($_COOKIE['token']))) {
+    http_response_code(Config::UNAUTHORIZED_CODE);
 }
