@@ -20,7 +20,7 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))):
         <form name="userForm"
               class="userForm"
               data-ng-submit="changePassword(userForm)"
-              cg-busy="{promise:registerPromise,message:'Loading..',backdrop:true,minDuration:1000}"
+              cg-busy="{promise:updatePasswordPromise,message:'Loading..',backdrop:true,minDuration:1000}"
               novalidate>
             <div class="form-group">
                 <label for="name">Name</label>
