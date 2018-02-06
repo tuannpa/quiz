@@ -74,7 +74,7 @@ if (!defined('APPLICATION_PATH')) {
     </div>
     <form name="registerForm"
           data-ng-submit="doRegister(registerForm)"
-          cg-busy="{promise:registerPromise,message:'Loading..',backdrop:true,minDuration:1000}"
+          cg-busy="{promise:registerPromise,message:'Loading..',backdrop:true, minDuration:1000, wrapperClass:'user-register'}"
           data-ng-init="csrfToken = '<?= $_SESSION['CSRFToken'] ?>'"
           novalidate>
         <div class="modal-body">
@@ -139,7 +139,7 @@ if (!defined('APPLICATION_PATH')) {
                        class="form-control"
                        id="passwordConfirm"
                        data-compare-to="password">
-                <small data-ng-if="registerForm.$submitted"
+                <small data-ng-if="registerForm.$submitted && registerForm.passwordConfirm.$invalid"
                        class="text-danger validation-message">
                     <span class="fa fa-exclamation-triangle"
                           data-ng-show="registerForm.passwordConfirm.$error.compareTo">Password confirmation does not match</span>
@@ -203,6 +203,7 @@ if (!defined('APPLICATION_PATH')) {
             </button>
         </div>
     </form>
+
 </script>
 <script type="text/javascript">
     $(document).ready(function () {

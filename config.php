@@ -19,6 +19,7 @@ class Config
     /**
      * Declare status code for multiple usages.
      */
+    const BAD_REQUEST_CODE = 400;
     const UNAUTHORIZED_CODE = 401;
 
     /**

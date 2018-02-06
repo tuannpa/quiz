@@ -295,3 +295,7 @@ input[type=checkbox], input[type=radio] {
 .validation-message {
     margin-left: 0.3em;
 }
+
+.regiter-loading {
+    top: 10em !important;
+}
