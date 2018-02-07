@@ -15,7 +15,7 @@ class HomeController extends BaseController
      */
     public function updatePassword($userId, $password)
     {
-        $state = $this->queryHelper->update('users', ['password'])
+        $status = $this->queryHelper->update('users', ['password'])
             ->where('id = ?')
             ->setQuery()
             ->execQuery('crud', 'si', [
@@ -23,6 +23,6 @@ class HomeController extends BaseController
                 $userId
             ]);
 
-        return $this->jsonResponse(['status' => $state]);
+        return $status;
     }
 }

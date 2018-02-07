@@ -47,6 +47,9 @@ if (!defined('APPLICATION_PATH')) {
     include VIEW_DIR . $page . '.php';
     include BLOCK_DIR . 'footer.php';
     ?>
+    <!-- Toaster Notification -->
+    <toaster-container
+            toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true, 'animation-class': 'toast-bottom-right'}"></toaster-container>
 </div>
 <script src="public/js/jquery/jquery.min.js"></script>
 <script src="public/js/bootstrap/bootstrap.bundle.min.js"></script>

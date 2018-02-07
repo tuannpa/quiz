@@ -20,19 +20,27 @@ class RegisterController extends BaseController
             ->setQuery()
             ->execQuery('numRows', 's', [$username]);
 
-        if ($match == 1) {
-            return true;
-        }
-
-        return false;
+        return ($match == 1);
     }
 
     /**
      * Create new user.
      * @param array $data
+     * @return bool
      */
     public function createUser($data)
     {
+        $status = $this->queryHelper->insert('users', [
+            'username', 'password', 'name', 'date_of_birth', 'gender', 'role'
+        ])->execQuery('crud', 'ssssii', [
+            $data->username,
+            $data->password,
+            $data->name,
+            (isset($data->dateOfBirth)) ? $data->dateOfBirth : null,
+            (isset($data->gender)) ? $data->gender : null,
+            0 // common user by default
+        ]);
 
+        return $status;
     }
 }

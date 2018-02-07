@@ -4,13 +4,17 @@ registerController.$inject = [
     '$scope',
     'ngDialog',
     'md5',
-    '$http'
+    '$http',
+    'toaster',
+    '$timeout'
 ];
 
-function registerController($scope, 
+function registerController($scope,
                             ngDialog,
                             md5,
-                            $http) {
+                            $http,
+                            toaster,
+                            $timeout) {
     $scope.doRegister = function (form) {
         if (form.$valid) {
             angular.element('.user-register').find('.cg-busy-default-wrapper').addClass('regiter-loading');
@@ -28,6 +32,28 @@ function registerController($scope,
                     gender: $scope.gender || '',
                     csrfToken: $scope.csrfToken
                 }
+            }).then(function (response) {
+                var data = response.data;
+                $timeout(function () {
+                    toaster.pop({
+                        type: angular.lowercase(data.status),
+                        title: data.status,
+                        body: data.message,
+                        timeout: 2500
+                    });
+                    ngDialog.close();
+                }, 1200);
+            }).catch(function (error) {
+                var data = error.data;
+                $timeout(function () {
+                    toaster.pop({
+                        type: 'error',
+                        title: data['statusCode'] ? data['statusCode'] : data.status,
+                        body: data.message,
+                        timeout: 2500
+                    });
+                }, 1200);
+                form.$setPristine();
             })
         }
     };

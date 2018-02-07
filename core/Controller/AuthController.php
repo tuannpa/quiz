@@ -58,11 +58,7 @@ class AuthController extends BaseController
      */
     public static function verifyCSRFToken($token)
     {
-        if (!empty($token) && hash_equals($_SESSION['CSRFToken'], $token)) {
-            return true;
-        }
-
-        return false;
+        return (!empty($token) && hash_equals($_SESSION['CSRFToken'], $token));
     }
 
     /**

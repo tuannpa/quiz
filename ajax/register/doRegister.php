@@ -7,9 +7,16 @@ $params = RegisterController::getRequestPayload();
 if (AuthController::verifyCSRFToken($params->csrfToken)) {
     $controller = new RegisterController(new QueryHelper());
     if (!$controller->checkUserExists($params->username)) {
-        $controller->createUser($params);
-    } else {
+        $status = $controller->createUser($params);
+        http_response_code(Config::STATUS_OK_CODE);
         $controller->jsonResponse([
+            'status' => $status ? 'Success' : 'Error',
+            'message' => $status ? 'Account has been successfully created.' : 'Fail to create new account.'
+        ]);
+    } else {
+        http_response_code(Config::BAD_REQUEST_CODE);
+        $controller->jsonResponse([
+            'status' => 'Error',
             'message' => 'Username is already in use.'
         ]);
     }

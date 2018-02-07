@@ -1,4 +1,4 @@
-myApp.controller('homeController', homeController)
+myApp.controller('homeController', homeController);
 
 homeController.$inject = [
     '$scope',
@@ -22,9 +22,9 @@ function homeController($scope, $http, md5, toaster, $timeout) {
                 var data = response.data;
                 $timeout(function () {
                     toaster.pop({
-                        type: data.status ? 'success' : 'error',
-                        title: data.status ? 'Success!' : 'Error!',
-                        body: data.status ? 'Password has been updated!' : 'Unknown error!',
+                        type: angular.lowercase(data.status),
+                        title: data.status,
+                        body: data.message,
                         timeout: 2500
                     });
                     $scope.password = '';
@@ -33,10 +33,11 @@ function homeController($scope, $http, md5, toaster, $timeout) {
                 }, 1200);
             }).catch(function (error) {
                 $timeout(function () {
+                    var data = response.data;
                     toaster.pop({
                         type: 'error',
-                        title: error.status + 'error',
-                        body: error.statusText,
+                        title: data.status,
+                        body: data.message,
                         timeout: 2500
                     });
                     $scope.password = '';
