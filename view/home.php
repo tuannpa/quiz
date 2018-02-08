@@ -2,7 +2,7 @@
 if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))):
     require_once CONTROLLER_DIR . 'HomeController.php';
 
-    $homeController = new HomeController($baseInstance->queryHelper);
+    $homeController = new HomeController();
     $userInfo = AuthController::getUserInfo($token);
     if (isset($_SESSION['endOfTest'])):
         unset($_SESSION['endOfTest']);
@@ -115,10 +115,6 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))):
 			    </span>
             </div>
         </form>
-
-        <!-- Toaster Notification -->
-        <toaster-container
-                toaster-options="{'position-class': 'toast-bottom-right', 'close-button':true, 'animation-class': 'toast-bottom-right'}"></toaster-container>
 
         <hr/>
         <h4>System action</h4>

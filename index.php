@@ -38,11 +38,10 @@ if (!defined('APPLICATION_PATH')) {
         AuthController::setCSRFToken();
         $_SESSION['CSRFToken'] = AuthController::getCSRFToken();
     }
-    $baseInstance = new BaseController(new QueryHelper());
-    $authController = new AuthController($baseInstance->queryHelper);
+    $authController = new AuthController();
     include BLOCK_DIR . 'header.php';
     include BLOCK_DIR . 'menu.php';
-    $urlParams = $baseInstance->getUrlParams();
+    $urlParams = $authController->getUrlParams();
     $page = isset($urlParams->page) ? $urlParams->page : 'home';
     include VIEW_DIR . $page . '.php';
     include BLOCK_DIR . 'footer.php';

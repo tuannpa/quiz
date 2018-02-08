@@ -8,6 +8,14 @@ require_once CONTROLLER_DIR . 'Base/BaseController.php';
 class RegisterController extends BaseController
 {
     /**
+     * RegisterController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Check if username is already in use.
      * @param $username
      * @return bool

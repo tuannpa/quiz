@@ -3,7 +3,7 @@ if (!is_bool(AuthController::verifyToken($_COOKIE['token']))):
     require_once CONTROLLER_DIR . 'QuizController.php';
 
     if (!isset($_SESSION['endOfTest'])):
-        $quizController = new QuizController($baseInstance->queryHelper);
+        $quizController = new QuizController();
         $questions = $quizController->generateRandomQuestions();
         $currentQuestion = $quizController->getCurrentQuestion();
         $currentQuestion->id = (int)$currentQuestion->id;

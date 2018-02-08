@@ -13,15 +13,16 @@ class BaseController
     /**
      * @var QueryHelper
      */
-    public $queryHelper;
+    protected $queryHelper;
 
     /**
      * BaseController constructor.
-     * @param QueryHelper $queryHelper
      */
-    public function __construct(QueryHelper $queryHelper)
+    public function __construct()
     {
-        $this->queryHelper = $queryHelper;
+        if (!$this->queryHelper instanceof QueryHelper) {
+            $this->queryHelper = new QueryHelper();
+        }
     }
 
     /**
@@ -89,6 +90,16 @@ class BaseController
     }
 
     /**
+     * Set the http status code.
+     * @param int $code
+     * @return int
+     */
+    public static function setHttpResponseCode($code)
+    {
+        return http_response_code($code);
+    }
+
+    /**
      * Show the time in this format: HH:mm:ss.
      * @param $time
      * @return string
@@ -96,5 +107,21 @@ class BaseController
     public function formatTime($time)
     {
         return sprintf('%02d:%02d:%02d', ($time / 3600), ($time / 60 % 60), ($time % 60));
+    }
+
+    /**
+     * Return response.
+     * @param int $statusCode
+     * @param string $message
+     * @return int
+     */
+    public static function response($statusCode, $message)
+    {
+        self::setHttpResponseCode($statusCode);
+        return self::Json([
+            'statusCode' => $statusCode,
+            'message' => $message
+
+        ]);
     }
 }

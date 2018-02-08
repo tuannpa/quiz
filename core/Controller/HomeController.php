@@ -8,6 +8,14 @@ require_once CONTROLLER_DIR . 'Base/BaseController.php';
 class HomeController extends BaseController
 {
     /**
+     * HomeController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Update user password.
      * @param $userId
      * @param $password

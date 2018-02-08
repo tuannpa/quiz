@@ -299,3 +299,11 @@ input[type=checkbox], input[type=radio] {
 .regiter-loading {
     top: 10em !important;
 }
+
+/**
+ Database quiz result
+ **/
+
+.page-heading {
+    margin: 2em 0 !important;
+}

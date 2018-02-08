@@ -17,7 +17,7 @@
                         Database
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="javascript:void(0)">Result</a>
+                        <a class="dropdown-item" href="?page=result">Result</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="javascript:void(0)">User's Remark</a>
                     </div>

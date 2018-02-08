@@ -5,7 +5,7 @@ require_once CONTROLLER_DIR . 'QuizController.php';
 require_once HELPER_DIR . 'TemplateHelper.php';
 
 if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
-    $controller = new QuizController(new QueryHelper());
+    $controller = new QuizController();
     $params = QuizController::getRequestPayload();
     $request = $controller->getUrlParams();
     $userInfo = AuthController::getUserInfo($token);
@@ -111,9 +111,5 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
         'questions' => isset($_SESSION['answer']) ? count($_SESSION['answer']) : null
     ]);
 } else {
-    http_response_code(Config::UNAUTHORIZED_CODE);
-    QuizController::Json([
-        'statusCode' => Config::UNAUTHORIZED_CODE,
-        'message' => 'Unauthorized'
-    ]);
+    QuizController::response(Config::UNAUTHORIZED_CODE, 'Unauthorized');
 }

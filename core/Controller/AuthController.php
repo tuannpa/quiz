@@ -34,6 +34,14 @@ class AuthController extends BaseController
     private static $_CSRFToken = '';
 
     /**
+     * AuthController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Set the value of the CSRF Token.
      * @param int @length
      */

@@ -5,6 +5,14 @@ require_once CONTROLLER_DIR . 'Base/BaseController.php';
 class QuizController extends BaseController
 {
     /**
+     * QuizController constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Get the answer's choice of the current question, used in case the page is reloaded.
      * @return int
      */
