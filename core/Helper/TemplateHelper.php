@@ -28,15 +28,16 @@ class TemplateHelper
 
     /**
      * Get HTML content of the file from given file's path.
+     * @throws Exception
      * @return bool|string
      */
     public function getFileContent()
     {
-        if (file_exists(self::$_filePath)) {
-            return file_get_contents(self::$_filePath);
+        if (!file_exists(self::$_filePath)) {
+            throw new Exception('File not found!');
         }
 
-        return false;
+        return file_get_contents(self::$_filePath);
     }
 
     /**
@@ -47,12 +48,16 @@ class TemplateHelper
      */
     public function renderTemplate($placeholderValue)
     {
+        $newPlaceholderValue = [];
         foreach ($placeholderValue as $placeholder => $value) {
             $formattedPlaceholder = sprintf('[%s]', $placeholder);
             $newPlaceholderValue[$formattedPlaceholder] = $value;
         }
-        if (!$this->getFileContent()) {
-            throw new Exception('File not found!');
+
+        try {
+            $this->getFileContent();
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
 
         return strtr($this->getFileContent(), $newPlaceholderValue);

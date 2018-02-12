@@ -1,6 +1,7 @@
 <?php
 
 require_once CONTROLLER_DIR . 'Base/BaseController.php';
+require_once HELPER_DIR . 'TemplateHelper.php';
 
 class QuizController extends BaseController
 {
@@ -36,14 +37,14 @@ class QuizController extends BaseController
      */
     public function generateRandomQuestions($categoryId = 1)
     {
-        $query = $this->queryHelper->select('id')
+        $result = $this->queryHelper->select('id')
             ->from('questions')
             ->where('category_id = ?')
             ->orderBy('RAND()')
             ->setQuery()
             ->execQuery('getResult', 'i', [$categoryId]);
 
-        $randomQuestions = $this->queryHelper->fetchData($query);
+        $randomQuestions = $this->queryHelper->fetchData($result);
         if (!isset($_SESSION['firstInit'])) {
             $_SESSION['firstInit'] = true;
             foreach ($randomQuestions as $question) {
@@ -52,6 +53,23 @@ class QuizController extends BaseController
         }
 
         return $_SESSION['questions'];
+    }
+
+    /**
+     * Load template by using the given file path.
+     * @param $filePath
+     * @param $data
+     * @return string
+     */
+    public function loadTemplate($filePath, $data)
+    {
+        try {
+            $template = TemplateHelper::setFilePath($filePath)->renderTemplate($data);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+
+        return $template;
     }
 
     /**

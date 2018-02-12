@@ -2,7 +2,6 @@
 session_start();
 require_once '../ajaxConfig.php';
 require_once CONTROLLER_DIR . 'QuizController.php';
-require_once HELPER_DIR . 'TemplateHelper.php';
 
 if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
     $controller = new QuizController();
@@ -50,21 +49,24 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
         $id = isset($nextQuestionId) ? $nextQuestionId : $prevQuestionId;
         $question = $controller->loadQuestion($id);
 
-        $questionTemplate = TemplateHelper::setFilePath('template/questionTemplate.html')
-            ->renderTemplate([
-                'questionId' => $_SESSION['position'],
-                'questionContent' => $question->content,
-                'firstChoice' => $question->first_choice,
-                'secondChoice' => $question->second_choice,
-                'thirdChoice' => $question->third_choice,
-                'fourthChoice' => $question->fourth_choice
-            ]);
+        $filePath = [
+            'questionTemplate' => 'template/questionTemplate.html',
+            'questionTrackingTemplate' => 'template/questionTrackingTemplate.html'
+        ];
 
-        $questionTrackingTemplate = TemplateHelper::setFilePath('template/questionTrackingTemplate.html')
-            ->renderTemplate([
-                'position' => $_SESSION['position'],
-                'totalQuestions' => $params->totalQuestions
-            ]);
+        $questionTemplate = $controller->loadTemplate($filePath['questionTemplate'], [
+            'questionId' => $_SESSION['position'],
+            'questionContent' => $question->content,
+            'firstChoice' => $question->first_choice,
+            'secondChoice' => $question->second_choice,
+            'thirdChoice' => $question->third_choice,
+            'fourthChoice' => $question->fourth_choice
+        ]);
+
+        $questionTrackingTemplate = $controller->loadTemplate($filePath['questionTrackingTemplate'], [
+            'position' => $_SESSION['position'],
+            'totalQuestions' => $params->totalQuestions
+        ]);
     } else {
         // TODO: Refactor, check if id is changeable to make this more dynamically
         $allQuestions = $controller->loadQuestionByCateId();
@@ -88,14 +90,15 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
             $score,
             $totalTime
         ]);
-        $endOfTestTemplate = TemplateHelper::setFilePath('template/endOfTestTemplate.html')
-            ->renderTemplate([
-                'correctAnswer' => $correctAnswer,
-                'incorrectAnswer' => $incorrectAnswer,
-                'totalTime' => $controller->formatTime($totalTime),
-                'score' => $score
-            ]);
-        $questionTrackingTemplate = "";
+
+        $endOfTestTemplate = $controller->loadTemplate('template/endOfTestTemplate.html', [
+            'correctAnswer' => $correctAnswer,
+            'incorrectAnswer' => $incorrectAnswer,
+            'totalTime' => $controller->formatTime($totalTime),
+            'score' => $score
+        ]);
+
+        $questionTrackingTemplate = '';
         unset($_SESSION['answer'], $_SESSION['questions'], $_SESSION['firstInit'], $_SESSION['currentQuestion'], $_SESSION['position']);
     }
 

@@ -32,27 +32,32 @@ class QueryHelper extends Database
      */
     public function findById($table, $id, $column = 'id')
     {
-        $query = $this->select('*')
+        $result = $this->select('*')
             ->from($table)
             ->where($column . ' = ?')
             ->setQuery()
             ->execQuery('getResult', 'i', [$id]);
 
-        return $this->fetchData($query);
+        return $this->fetchData($result);
     }
 
     /**
      * Return all records of the table.
      * @param string $table
+     * @param bool $getTotalRecord
      * @return mixed
      */
-    public function all($table)
+    public function all($table, $getTotalRecord = false)
     {
         $query = $this->select('*')
-            ->from($table)
-            ->execQuery('getResult');
+            ->from($table);
 
-        return $this->fetchData($query);
+        if ($getTotalRecord) {
+            return $query->execQuery('numRows');
+        }
+        $result = $query->execQuery('getResult');
+
+        return $this->fetchData($result);
     }
 
     /**
