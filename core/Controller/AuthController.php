@@ -25,7 +25,7 @@ class AuthController extends BaseController
      * Expired time (in seconds) for the token.
      * @var int
      */
-    private static $_expireTime = 1200;
+    private static $_expireTime = 86400;
 
     /**
      * CSRF Token.
@@ -67,6 +67,17 @@ class AuthController extends BaseController
     public static function verifyCSRFToken($token)
     {
         return (!empty($token) && hash_equals($_SESSION['CSRFToken'], $token));
+    }
+
+    /**
+     * Initialize CSRF token.
+     */
+    public static function initCSRFToken()
+    {
+        if (!isset($_SESSION['CSRFToken'])) {
+            AuthController::setCSRFToken();
+            $_SESSION['CSRFToken'] = AuthController::getCSRFToken();
+        }
     }
 
     /**
@@ -120,8 +131,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * Check the token sent from client, return the token back to client, throw error
-     * if token can not be decrypted.
+     * Check the token sent from client, return the token if token is valid, otherwise return false.
      * @param string $token
      * @return string | bool
      */
@@ -144,7 +154,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * Add the token to cookie.
+     * Set access token to cookie.
      * @param $token
      * @return bool
      */
@@ -155,6 +165,16 @@ class AuthController extends BaseController
         }
 
         return false;
+    }
+
+    /**
+     * Initialize the cookie.
+     */
+    public static function initToken()
+    {
+        if (!isset($_COOKIE['token'])) {
+            $_COOKIE['token'] = null;
+        }
     }
 
     /**

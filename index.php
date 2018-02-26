@@ -32,12 +32,9 @@ if (!defined('APPLICATION_PATH')) {
     <?php
     require_once APPLICATION_PATH . 'config.php';
     Config::loadDirectories();
-    require_once CONTROLLER_DIR . 'Base/BaseController.php';
     require_once CONTROLLER_DIR . 'AuthController.php';
-    if (!isset($_SESSION['CSRFToken'])) {
-        AuthController::setCSRFToken();
-        $_SESSION['CSRFToken'] = AuthController::getCSRFToken();
-    }
+    AuthController::initCSRFToken();
+    AuthController::initToken();
     $authController = new AuthController();
     include BLOCK_DIR . 'header.php';
     include BLOCK_DIR . 'menu.php';

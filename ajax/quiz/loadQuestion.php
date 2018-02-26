@@ -13,19 +13,17 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
         $_SESSION['answer'] = [];
     }
 
-    $_SESSION['answer'][$params->currentQuestionId] = $params->userChoice;
+    $_SESSION['answer'][$params->currentQuestionId] = isset($params->userChoice) ? $params->userChoice : null;
 
     foreach ($_SESSION['questions'] as $key => $questionId) {
-        if ($request->task == 'prev') {
-            if ($params->currentQuestionId == $questionId) {
-                $showBtnPrev = (($key - 1) != 0) ? true : false;
+        if ($params->currentQuestionId == $questionId) {
+            if ($request->task == 'prev') {
+                $showBtnPrev = (($key - 1) != 0);
                 $prevQuestionId = $_SESSION['questions'][$key - 1];
                 $selectedChoice = $controller->getSelectedChoice($prevQuestionId);
                 $_SESSION['position'] = $key;
-            }
-        } else {
-            if ($params->currentQuestionId == $questionId) {
-                $showBtnPrev = ($key >= 0) ? true : false;
+            } else {
+                $showBtnPrev = ($key >= 0);
                 $_SESSION['endOfTest'] = ($key == (count($_SESSION['questions']) - 1)) ? true : null;
                 $totalTime = ($key == (count($_SESSION['questions']) - 1)) ? $params->totalTime : null;
                 $nextQuestionId = (!isset($_SESSION['endOfTest'])) ? $_SESSION['questions'][$key + 1] : null;
@@ -41,7 +39,9 @@ if (!is_bool($token = AuthController::verifyToken($_COOKIE['token']))) {
 
     if (isset($nextQuestionId)) {
         $_SESSION['currentQuestion'] = $nextQuestionId;
-    } elseif (isset($prevQuestionId)) {
+    }
+
+    if (isset($prevQuestionId)) {
         $_SESSION['currentQuestion'] = $prevQuestionId;
     }
 

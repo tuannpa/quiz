@@ -20,7 +20,8 @@ class QuizController extends BaseController
     public static function getQuestionChoice()
     {
         if (isset($_SESSION['currentQuestion']) && isset($_SESSION['answer'])) {
-            if (array_key_exists($_SESSION['currentQuestion'], $_SESSION['answer'])) {
+            if (array_key_exists($_SESSION['currentQuestion'], $_SESSION['answer'])
+                && !empty($_SESSION['answer'][$_SESSION['currentQuestion']])) {
                 return $_SESSION['answer'][$_SESSION['currentQuestion']];
             }
         }
